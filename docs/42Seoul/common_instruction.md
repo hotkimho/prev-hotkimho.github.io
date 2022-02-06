@@ -1,3 +1,11 @@
+---
+layout: default
+title: Nestjs
+nav_order: 3
+parent: 42Seoul
+permalink: /docs/common_instruction
+---
+
   # 프로젝트 공통 규칙
   - 여러분의 프로젝트는 Norminette 기준에 따라 작성되어야 합니다. 보너스 파일이나 함수가 있는 경우, 해당 파일/함수도 Norminette 기준을 체크하는 데에 포함해야 하며, Norminette 에러가 발생할 시에는 여러분의 프로젝트는 0점을 받게 됩니다.
 
