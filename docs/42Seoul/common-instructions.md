@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Nestjs
-nav_order: 3
+title: Common Instructions
 parent: 42Seoul
-permalink: /docs/common_instruction
+permalink: /docs/42seoul/common-instructions
 ---
 
-  # 프로젝트 공통 규칙
-  - 여러분의 프로젝트는 Norminette 기준에 따라 작성되어야 합니다. 보너스 파일이나 함수가 있는 경우, 해당 파일/함수도 Norminette 기준을 체크하는 데에 포함해야 하며, Norminette 에러가 발생할 시에는 여러분의 프로젝트는 0점을 받게 됩니다.
+# Common Instructions
+
+- 여러분의 프로젝트는 Norminette 기준에 따라 작성되어야 합니다. 보너스 파일이나 함수가 있는 경우, 해당 파일/함수도 Norminette 기준을 체크하는 데에 포함해야 하며, Norminette 에러가 발생할 시에는 여러분의 프로젝트는 0점을 받게 됩니다.
 
 - 정의되지 않는 동작인 경우 이외에는 여러분이 작성하신 프로그램이 예기치 않게 종료되면 안됩니다 (segmentation fault, bus error, double free 등). 만약 여러분의 프로그램이 예기치 않게 종료된다면, 작동하지 않은 것으로 간주되어 평가에서 0점을 받게 됩니다.
 
@@ -25,4 +25,4 @@ permalink: /docs/common_instruction
 
 - 할당된 git 저장소에 과제물을 제출하세요. 오직 git 저장소에 있는 과제물만 채점 할 것입니다. Deepthought가 평가를 하게 된다면, 동료평가 이후에 수행됩니다. 만약 Deepthought가 평가 중 오류가 발생한다면, 그 즉시 평가는 중지될 것입니다.
 
-- 실행파일은 각각 `project name`으로 이름을 지어야 합니다.
+- 실행파일은 각각 `Project name`로 이름을 지어야 합니다.

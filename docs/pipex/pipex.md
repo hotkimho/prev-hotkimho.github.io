@@ -1,7 +1,6 @@
 ---
 layout: default
-title: pipex
-parent: 42Seoul
+title: Pipex
 has_children: true
 permalink: /docs/pipex
 ---
