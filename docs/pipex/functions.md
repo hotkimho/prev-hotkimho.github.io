@@ -4,10 +4,7 @@ title: Functions
 parent: Pipex
 
 ---
-◦ execve
-◦ perror
-◦ strerror
-◦ exit
+
 
 # __1. fork__
 ## 1. 헤더파일
@@ -273,6 +270,7 @@ int dup(int fd);
 
 ## 4. 함수 설명
 `dup` 함수는 이름 그대로 `파일 디스크립터`를 인자로 받고 복사하여 반환하는 함수입니다. 하지만 `복제`를 하는것이지 원본과 똑같은 파일디스크립터가 아닙니다.   
+복제할 때, 복제되는 `파일 디스크립터`의 값은 현재 사용하고 있지 않는 가장 작은 파일 디스크립터값을 반환 합니다.   
 
 ## 5. 예시 코드
 ```c
@@ -316,23 +314,57 @@ pid_t dup2(int fd, int fd2);
 ```
 
 ## 3. 반환 값
-성공 시 `0`    
+성공 시 `두 번째 매개변수 파일 디스크립터 반환`    
 실패 시 `-1`
 
 ## 4. 함수 설명
-
+`dup`함수는 매개 변수에 2개의 `파일 디스크립터`를 입력 받습니다. 그리고 `첫 번째 인자`를 `두 번째 인자`에 복제합니다. 그리고 복제된 파일 디스크립터를 반환 합니다.   
+만약 `두 번째 인자`가 `open`상태라면 `close`를 진행하고 복제를 진행합니다.
 
 ## 5. 예시 코드
+```c
+#include <stdio.h>
+#include <unistd.h>
 
-# __NO. 함수명__
+int main(void)
+{
+	int fd[2];
+	int fd2[2];
+	int temp_fd;
+
+	char buf[1024], buf1[1024], buf2[1024];
+
+	pipe(fd);
+	pipe(fd2);
+	temp_fd = dup2(fd[1], fd2[1]);
+
+	write(fd[1], "hello", 6);
+	read(fd[0], buf, 1024);
+	printf("fd[1]에 쓴 데이터 : %s\n", buf);
+
+	write(fd2[1], "kimho", 6);
+	read(fd[0], buf1, 1024);
+	printf("fd2[1]에 쓴 데이터 : %s\n", buf1);
+
+	write(temp_fd, "12345", 6);
+	read(fd[0], buf2, 1024);
+	printf("temp_fd에 쓴 데이터 : %s\n", buf2);
+}
+```
+![dup2_1](/docs/pipex/images/6.dup2_1.png)
+`temp_fd = dup2(fd[1], fd2[1])` 코드를 실행함으로써 `fd[1]`을 `fd2[1]`에 복제하고 반환합니다.   
+그리고 각각 `fd[1], fd2[1], temp_fd`에 문자열을 `write`하고 `fd[0]`을 통해 `read`하면 저장한 문자열이 모두 출력된 것을 볼 수 있습니다.
+
+
+# __7. access__
 ## 1. 헤더파일
 ```c
-#include <sys/wait.h>
+#include <unistd.h>
 ```
 
 ## 2. 함수 원형
 ```c
-pid_t wait(int *wstatus);
+int access(const char *path, int mode);
 ```
 
 ## 3. 반환 값
@@ -340,5 +372,53 @@ pid_t wait(int *wstatus);
 실패 시 `-1`
 
 ## 4. 함수 설명
+파일 명대로 파일을 확인하는 함수입니다. 첫 번째 인자에 해당하는 `file`을 두 번째 인자값인 `mode`값으로 확인을 합니다.   
+mode값으로 파일을 검사할 때, `mode` 에 해당하는 내용이 가능하면 `1`, 실패하면 `-1`을 반환합니다.   
+__Mode 값__
+<div markdown="1">
+
+| mode | 내용 |
+|:-----------	 |:-|
+| F_OK | 파일 존재 확인 |
+| R_OK | 읽기 확인 |
+| W_OK | 쓰기 확인 |
+| X_OK | 실행 확인 |
+
+</div>
+
+# __8. execve__
+## 1. 헤더파일
+```c
+#include <unistd.h>
+```
+
+## 2. 함수 원형
+```c
+int execve(const char *pathname, char *const argv[], char *const envp[]);
+```
+
+## 3. 반환 값
+성공 시 `별도의 프로세스가 생성되고 정상적으로 실행되면 0 반환`    
+실패 시 `-1`
+
+## 4. 함수 설명
+`execve` 함수는 `exec` 계열의 함수입니다. `exec` 계열 함수는 보통 매개변수로 입력된 파일을 실행하는 함수입니다.   
+`execve` 함수는 3개의 인자를 받습니다. 첫 번째 인자로 받은 `pathname`의 파일을 실행하고, `argv`, `envp` 두, 세 번째 매개변수 값을 전달합니다.   
+첫 번째 인자에 대해 `실행 권한` 확인이 필요하며 이는 `access`함수를 통해 검사가 가능합니다.
+`argv`는 첫 번째 인자로 실행되는 파일에 대한 옵션입니다. 예를 들어 첫 번째 파일이 `ls`명령을 실행하면 `argv`안에 `argv[]={"ls", "-l"}` 와 같이 옵션값이 들어가며 가장 `첫 번째`인덱스에는 명령어의 이름이 들어가야 합니다.   
+`evnp`는 환경 설정 파일이다.
+`argv, envp`모두 char *[] 배열 형태이기에 마지막 인덱스에 `NULL`값을 넣어줘야 한다.   
 
 ## 5. 예시 코드
+```c
+#include <stdio.h>
+#include <unistd.h>
+
+int main(int argc, char **argv, char **envp)
+{
+	execve("/bin/ls", argv, NULL);
+}
+```
+![execve_1](/docs/pipex/images/8.evecve_1.png)
+코드를 보면 첫 번째 인자로 `/bin/ls` 파일을 지정했고 실핼할 때 `-l`옵션을 주었다.   
+그래서 `ls -l`명령어가 실행된다.
