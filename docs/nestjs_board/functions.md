@@ -59,3 +59,48 @@ parent: Nestjs_board
   - 댓글은 공백이 올 수 없음
   - 대댓글은...... 좀더 고민!
 - 게시글이 삭제되면 게시글에 작성된 댓글이 삭제되엉야 함(중요)
+
+## 3. DB 관계도
+![db](/docs/nestjs_board/images/board_ERD.png)
+
+### User
+<div markdown="1">
+
+| 컬럼명 | 자료형 | 옵션 | 설명 |
+|:-----|:------|:----|:----|
+| id  | BIGINT | pk  | 고유 id |
+| username | VARCHAR | unique, not null| 아이디 | 
+| password  | VARCHAR | not null| 비밀번호 |
+| nickname  | VARCHAR | unique, not null | 닉네임 |
+| email  | VARCHAR | unique, not null | 이메일 |
+| created_date  | VARCHAR | not null | 생성날자 |
+
+</div>
+
+### Post
+<div markdown="1">
+
+| 컬럼명 | 자료형 | 옵션 | 설명 |
+|:-----|:------|:----|:----|
+| id  | BIGINT | pk  | 고유 id |
+| username | VARCHAR | unique, not null| 아이디 | 
+| password  | VARCHAR | not null| 비밀번호 |
+| nickname  | VARCHAR | unique, not null | 닉네임 |
+| email  | VARCHAR | unique, not null | 이메일 |
+| created_date  | VARCHAR | not null | 생성날자 |
+
+</div>
+
+### User
+<div markdown="1">
+
+| 컬럼명 | 자료형 | 옵션 | 설명 |
+|:-----|:------|:----|:----|
+| id  | BIGINT | pk  | 고유 id |
+| username | VARCHAR | unique, not null| 아이디 | 
+| password  | VARCHAR | not null| 비밀번호 |
+| nickname  | VARCHAR | unique, not null | 닉네임 |
+| email  | VARCHAR | unique, not null | 이메일 |
+| created_date  | VARCHAR | not null | 생성날자 |
+
+</div>
