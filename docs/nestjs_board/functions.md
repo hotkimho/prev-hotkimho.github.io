@@ -63,6 +63,8 @@ parent: Nestjs_board
 ## 3. DB 관계도
 ![db](/docs/nestjs_board/images/board_ERD.png)
 
+__Post, Comemnt 관계도는 1:N의 관계__
+__Comment 테이블 `commentId` 추가__
 ### User
 <div markdown="1">
 
@@ -82,25 +84,69 @@ parent: Nestjs_board
 
 | 컬럼명 | 자료형 | 옵션 | 설명 |
 |:-----|:------|:----|:----|
-| id  | BIGINT | pk  | 고유 id |
-| username | VARCHAR | unique, not null| 아이디 | 
-| password  | VARCHAR | not null| 비밀번호 |
-| nickname  | VARCHAR | unique, not null | 닉네임 |
-| email  | VARCHAR | unique, not null | 이메일 |
+| postId  | BIGINT | pk  | 고유 id |
+| userId | BIGINT | fk, not null| user id | 
+| title  | VARCHAR | not null| 제목 |
+| content  | TEXT | not null | 내용 |
+| writer  | VARCHAR | not null | 작성자 |
 | created_date  | VARCHAR | not null | 생성날자 |
+| modified_date  | VARCHAR | not null | 수정날자 |
+| view  | BIGINT | not null | 조회수 |
 
 </div>
 
-### User
+### Comment
 <div markdown="1">
 
 | 컬럼명 | 자료형 | 옵션 | 설명 |
 |:-----|:------|:----|:----|
-| id  | BIGINT | pk  | 고유 id |
-| username | VARCHAR | unique, not null| 아이디 | 
-| password  | VARCHAR | not null| 비밀번호 |
-| nickname  | VARCHAR | unique, not null | 닉네임 |
-| email  | VARCHAR | unique, not null | 이메일 |
+| commentId  | BIGINT | pk  | 고유 id |
+| userId  | BIGINT | fk, not null  | user id |
+| postId | BIGINT | fk, not null | 게시글 id | 
+| title | VARCHAR | not null | 제목 | 
+| writer  | VARCHAR | not null | 작성자 |
+| content  | TEXT | not null | 내용 |
 | created_date  | VARCHAR | not null | 생성날자 |
+| modified_date  | VARCHAR | not null | 수정날자 |
+
+</div>
+
+```
+API문서는 추가되면 내용을 추가하고, 스웨거를 사용해 이미지도 첨부
+```
+
+### 사용자 API
+<div markdown="1">
+
+| 이름 | Method | URL | 설명 |
+|:-----|:------|:----|:----|
+| 로그인 | GET | /auth/login  | 게시글 전체 목록을 가져온다 |
+| 로그아웃  | GET | /auth/logout  | 특정 게시글을 가져온다 |
+| 회원가입 | POST | /auth/SignUp |  | 특정 페이지에서 게시글 목록을 가져온다. 
+| 회원가입 중복 검사| GET | /auth/SignUp/:중복체크할 내용 | 제목 | 입력한 값에 맞는 게시글을 가져온다.
+
+</div>
+
+### 게시글 API
+<div markdown="1">
+
+| 이름 | Method | URL | 설명 |
+|:-----|:------|:----|:----|
+| 게시글 전체 조회  | GET | /post  | 게시글 전체 목록을 가져온다 |
+| 특정 게시글 조회  | GET | /post/:id  | 특정 게시글을 가져온다 |
+| 게시글 페이지 조회 | GET | 모르겠음 | 게시글 id | 특정 페이지에서 게시글 목록을 가져온다. 
+| 게시글 검색| VARCHAR | 모르겠음 | 제목 | 입력한 값에 맞는 게시글을 가져온다.
+
+</div>
+
+### 댓글 API
+<div markdown="1">
+
+| 이름 | Method | URL | 설명 |
+|:-----|:------|:----|:----|
+| 게시글에 등록된 댓글 조회  | GET | /post/:id/comment  | 게시글에 등로된 댓글 목록을 가져온다 |
+| 댓글 등록  | POST | /post/:id/comment  | 게시글에 댓글을 등록한다 |
+| 댓글 수정 | PUT | /post/:id/comment/:id | 게시글 id | 게시글에 등록된 댓글의 내용을 수정한다
+| 댓글 삭제| DELETE | /post/:id/comment/:id | 제목 | 게시글에 등록된 댓글을 삭제한다.
 
 </div>
