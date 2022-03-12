@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Logger
-parent: Nestjs_board
+parent: Nestjs
 
 ---
 ```
