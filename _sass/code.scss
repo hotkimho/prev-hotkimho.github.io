@@ -10,7 +10,10 @@ code {
   border: $border $border-color;
   border-radius: $border-radius;
 }
-
+//` ` 싱글 코드 색상
+code:not(pre > code){
+  color: $red-300; 
+}
 // Avoid appearance of dark border around visited code links in Safari
 a:visited code {
   border-color: $border-color;
@@ -53,7 +56,6 @@ div.highlighter-rouge {
   border-radius: $border-radius;
   box-shadow: none;
   -webkit-overflow-scrolling: touch;
-
   div.highlight,
   pre.highlight,
   code {
