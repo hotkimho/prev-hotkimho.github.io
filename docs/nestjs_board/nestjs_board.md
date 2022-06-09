@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Nestjs_board
-has_children: true
+#title: Nestjs_board
+has_children: false
 permalink: /docs/nestjs_board
 ---
 
