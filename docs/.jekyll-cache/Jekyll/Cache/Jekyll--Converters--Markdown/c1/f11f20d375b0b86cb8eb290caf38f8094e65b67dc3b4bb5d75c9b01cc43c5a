@@ -1,0 +1,49 @@
+I"G<h1 id="들어가며">들어가며</h1>
+<p>개인적인 생각이 많이 들어가 있습니다. 제가 적은 내용이 무조건 맞다고 말할 수 없습니다.</p>
+
+<h1 id="tcp가-신뢰성인-이유">TCP가 신뢰성인 이유</h1>
+<p>흔히 <code class="language-plaintext highlighter-rouge">TCP</code>는 신뢰성이 있다 라고 표현하고 <code class="language-plaintext highlighter-rouge">UDP</code>는 신뢰성이 없다라고 얘기합니다. 그럼 왜 TCP가 신뢰성이 있다는 걸까요??</p>
+
+<p>TCP에 대해 검색을 하면 많은 분들이 TCP는 <code class="language-plaintext highlighter-rouge">통신</code>을 하려면 <code class="language-plaintext highlighter-rouge">3 way handshake</code> 방식을 사용하여 연결하기 때문에 신뢰성이 있다고 표현합니다. 제 개인적인 생각으로는 <code class="language-plaintext highlighter-rouge">3 way handshake</code>는 연결하는 방법이지 신뢰성을 보장한다고 생각하지 않습니다. 3번의 요청/응답을 통해 연결이 성공/실패 해도 연결 상태만 바뀔뿐 전송된 데이터의 안전을 보장해주지 않습니다.</p>
+
+<p>제가 생각하는 TCP가 신뢰성 이유는 2가지라고 생각합니다(주관적, 배움에 따라 더 많아질 수 있습니다)</p>
+<ul>
+  <li>
+    <ol>
+      <li>패킷 손실 문제와 패킷 수신 순서에 대한 문제를 해결합니다.(흐름제어)</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>체크섬을 이용하여 수신된 데이터에 문제가 있으면 재수신을 요청합니다.</li>
+    </ol>
+  </li>
+</ul>
+
+<h3 id="패킷손실-및-패킷-수신-순서">패킷손실 및 패킷 수신 순서</h3>
+<p><code class="language-plaintext highlighter-rouge">네트워크 정체</code>는 네트워크에서 <code class="language-plaintext highlighter-rouge">한 연결에 대해 처리</code>할 수 있는 <code class="language-plaintext highlighter-rouge">데이터의 양이 초과</code>한 경우 발생합니다. 예를 들면 100Mbps 대역폭의 연결에서 1Gbps의 데이터를 전송할 수 없습니다. 100Mbps는 빠르게 포화되고 초과되는 데이터는 <code class="language-plaintext highlighter-rouge">삭제</code>될 것입니다.</p>
+
+<p>그래서 TCP는 데이터의 전송 속도를 조정하여, <code class="language-plaintext highlighter-rouge">흐름 제어(Stop And Wait, Sliidng Window)</code>이라는 방식을 사용해 손실된 패킷을 최소로 유지하며 데이터를 전송합니다.</p>
+
+<p>TCP는 <code class="language-plaintext highlighter-rouge">연결이 힘든 네트워크에서 취약</code>합니다. 예를 들면 Wi-FI 사용하는데 연결이 됐다 끊겼다 하는 경우가 많습니다. TCP는 <code class="language-plaintext highlighter-rouge">3 way handshake</code>방식으로 3번의 요청/응답을 하는데 연결이 자구 끊기는 이러한 상황에서 TCP는 <code class="language-plaintext highlighter-rouge">취약</code>하다고 말할 수 있습니다.<br />
+만약 데이터를 전송하던 중 다시 라우팅되어 <code class="language-plaintext highlighter-rouge">네트워크 경로가 바뀌면</code> 어떻게 될까요? 이러면 수신 받는 쪽에서는 <code class="language-plaintext highlighter-rouge">받는 패킷의 순서</code>가 깨지게 될겁니다. 하지만 TCP는 다행이 <code class="language-plaintext highlighter-rouge">순서 없는 패킷을 정리해 순차적</code>으로 처리 합니다.</p>
+
+<h3 id="체크섬">체크섬</h3>
+<p>TCP는 <code class="language-plaintext highlighter-rouge">수신된 데이터에 오류</code>가 있는지 검사하기 위해 체크섬을 사용합니다. 송신자는 체크섬 알고리즘을 사용해 계산한 체크섬을 <code class="language-plaintext highlighter-rouge">TCP헤더에 포함</code>하여 송신하고 수신자는 <code class="language-plaintext highlighter-rouge">헤더에 있는 체크섬 알고리즘</code>을 이용해 수신된 데이터를 확인하여 오류 여부를 파악합니다.</p>
+
+<h1 id="3-way-handshake">3 way handshake</h1>
+<p>TCP 연결은 클라이언트-서버간 <code class="language-plaintext highlighter-rouge">3 way handshake</code>(이하 핸드셰이크) 과정을 통해 진행됩니다. 정상적으로 연결이 이루어지면 <code class="language-plaintext highlighter-rouge">TCP세션</code>을 생성하여 서로 데이터를 주고 받습니다.</p>
+
+<p><img src="/docs/network/images/3hand.png" alt="3handd" />
+<strong>TCP에서 서버 클라이언트라는 관계는 없고 서로 다른 노드로 인식하지만 이해하기 쉽게 서버-클라이언트라고 표현하겠습니다</strong></p>
+
+<p>TCP 연결이 성립될려면 <code class="language-plaintext highlighter-rouge">서버는 항상 클라이언트의 요청</code>을 대기해야 합니다. 그리고 <code class="language-plaintext highlighter-rouge">3번의 요청/응답</code>을 진행하여 세션을 수립합니다.</p>
+
+<h3 id="1-클라이언트---서버-syn">1. 클라이언트 -&gt; 서버 SYN</h3>
+<p>클라이어튼는 서버에게  <code class="language-plaintext highlighter-rouge">SYN(Synchronize)</code> 플래그가 설정된 패킷을 서버로 전송합니다. 이 SYN <code class="language-plaintext highlighter-rouge">패킷은 앞으로 어떻게 통신할지(Sliding Window)</code>에 대한 설정값을 가지고 있습니다.</p>
+
+<h3 id="2-서버---클라이언트-synack">2. 서버 -&gt; 클라이언트 SYN/ACK</h3>
+<p>서버는 클라이언트에게 <code class="language-plaintext highlighter-rouge">ACK(Acknowledgment)</code>플래그와 SYN플래그가 설정된 패킷을 클라이언트에게 전송합니다. <code class="language-plaintext highlighter-rouge">ACK는 1번의 SYN 플래그를 정상적</code>으로 <code class="language-plaintext highlighter-rouge">수신</code>했다는 의미고 <code class="language-plaintext highlighter-rouge">SYN 플래그는 1번의 SYN 플래그의 설정값중 앞으로 어떤 설정값을 사용할지</code>에 대한 내용을 담고 있습니다.</p>
+
+<h3 id="3-클라이언트---서버-syn">3. 클라이언트 -&gt; 서버 SYN</h3>
+:ET

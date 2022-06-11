@@ -576,6 +576,8 @@ thead th { border-bottom: 1px solid #44434d; }
 
 code { padding: 0.2em 0.15em; font-weight: 400; background-color: #302d36; border: 1px solid #44434d; border-radius: 4px; }
 
+code:not(pre > code) { color: #dd2e2e; }
+
 a:visited code { border-color: #44434d; }
 
 div.highlighter-rouge { padding: 0.75rem; margin-top: 0; margin-bottom: 0.75rem; overflow-x: auto; background-color: #302d36; border-radius: 4px; box-shadow: none; -webkit-overflow-scrolling: touch; }

@@ -1,0 +1,203 @@
+I"�W<h1 id="entity-설정">Entity 설정</h1>
+<p><img src="/docs/nestjs_board/images/board_ERD.png" alt="db" />
+데이터베이스의 관계도에 잘못된 부분이 있습니다. Post - Comment 관계도가 N : M 관계가 아닙니다.</p>
+<ol>
+  <li>User(1) - Post(N)</li>
+  <li>User(1) - Comment(N)</li>
+  <li>Post(1) - Comment(N)
+이렇게 관계를 설정했습니다.</li>
+</ol>
+
+<h1 id="user-entity">User Entity</h1>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">@</span><span class="nd">Entity</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">User</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">PrimaryGeneratedColumn</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">username1</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">unique</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">length</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">username</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">select</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">length</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">password</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">nickname</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">unique</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">length</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">nickname</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">email</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">unique</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">length</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">email</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">()</span>
+  <span class="nx">created_date</span><span class="p">:</span> <span class="nb">Date</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">OneToMany</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">Post</span><span class="p">,</span> <span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">post</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="nx">Post</span><span class="p">[];</span>
+
+  <span class="p">@</span><span class="nd">OneToMany</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">Comment</span><span class="p">,</span> <span class="p">(</span><span class="nx">comment</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">comment</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span>
+  <span class="nx">comments</span><span class="p">:</span> <span class="nx">Comment</span><span class="p">[];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>관계를 설정하는 방법은 <code class="language-plaintext highlighter-rouge">OneToMany(1:N)</code>, <code class="language-plaintext highlighter-rouge">ManyToOne(N:1)</code>, <code class="language-plaintext highlighter-rouge">ManyToMany(N:M)</code>데코레이터를 이용합니다.</p>
+
+<p>User 엔티티는 Post 엔티티와 <code class="language-plaintext highlighter-rouge">1:N</code>의 관게입니다.
+<code class="language-plaintext highlighter-rouge">One, Many</code>의 기준은 설정하는 엔티티 본인입니다. 현재 <code class="language-plaintext highlighter-rouge">User</code>는 <code class="language-plaintext highlighter-rouge">1</code>의 관계를 의미하므로 <code class="language-plaintext highlighter-rouge">OneToMany</code>를 사용했고 반대로 <code class="language-plaintext highlighter-rouge">Post</code>는 <code class="language-plaintext highlighter-rouge">Many</code>를 의미하므로 <code class="language-plaintext highlighter-rouge">ManyToOne</code>을 사용합니다.</p>
+
+<h3 id="user">User</h3>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="p">@</span><span class="nd">OneToMany</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">Post</span><span class="p">,</span> <span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">post</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="nx">Post</span><span class="p">[];</span>
+</code></pre></div></div>
+<h3 id="post">Post</h3>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="p">@</span><span class="nd">ManyToOne</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">User</span><span class="p">,</span> <span class="p">(</span><span class="nx">user</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">user</span><span class="p">.</span><span class="nx">posts</span><span class="p">)</span>
+  <span class="p">@</span><span class="nd">JoinColumn</span><span class="p">([{</span> <span class="na">referencedColumnName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span> <span class="p">}])</span>
+  <span class="nx">user</span><span class="p">:</span> <span class="nx">User</span><span class="p">;</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">User</code>에서 여러 개의 <code class="language-plaintext highlighter-rouge">Post</code>를 가지므로 <code class="language-plaintext highlighter-rouge">posts: Post[]</code> 타입으로 정의되고<br />
+<code class="language-plaintext highlighter-rouge">Post</code>에서 1개의 <code class="language-plaintext highlighter-rouge">User</code>을 가지므로 <code class="language-plaintext highlighter-rouge">user: User</code>로 정의됩니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">JoinColumn</code> 데코레이터는 <code class="language-plaintext highlighter-rouge">User, Post</code>중 한 곳만 설정하면 되며, 설정하면 자동으로 <code class="language-plaintext highlighter-rouge">선언한 이름 + Id</code>로 외래키가 만들어집니다. 보통 관계에서 <code class="language-plaintext highlighter-rouge">Many</code>쪽에서 선언한다고 합니다.<br />
+설정한 곳은 <code class="language-plaintext highlighter-rouge">Post</code>이며 <code class="language-plaintext highlighter-rouge">referencedColumnName: 'id'</code>는 상대방의 <code class="language-plaintext highlighter-rouge">id</code>컬럼을 참조해 만들겠다는 의미입니다. 즉 <code class="language-plaintext highlighter-rouge">User</code>의 <code class="language-plaintext highlighter-rouge">id</code>컬럼을 참조해 외래키가 만들어지며 생성되는 외래키 명은 <code class="language-plaintext highlighter-rouge">user: User</code>로 정의 했으므로 <code class="language-plaintext highlighter-rouge">userId</code>로 생성됩니다.<br />
+아래에 설정한 Post, Comment 엔티티도 위와같은 방법으로 설정했습니다.</p>
+
+<h1 id="typeorm-공식문서-사용법">Typeorm 공식문서 사용법</h1>
+<p><code class="language-plaintext highlighter-rouge">typeorm</code> 공식문서에 나와있는 사용법은 어떤지 알아보겠습니다.</p>
+<ul>
+  <li>User(1) - Photo(N)<br />
+관계도는 위와 같습니다.</li>
+</ul>
+
+<h3 id="photo-entity">Photo Entity</h3>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">@</span><span class="nd">ManyToOne</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">User</span><span class="p">,</span> <span class="nx">user</span> <span class="o">=&gt;</span> <span class="nx">user</span><span class="p">.</span><span class="nx">photos</span><span class="p">)</span>
+    <span class="nx">user</span><span class="p">:</span> <span class="nx">User</span><span class="p">;</span>
+</code></pre></div></div>
+<h3 id="user-entity-1">User Entity</h3>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">@</span><span class="nd">OneToMany</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">Photo</span><span class="p">,</span> <span class="nx">photo</span> <span class="o">=&gt;</span> <span class="nx">photo</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span>
+    <span class="nx">photos</span><span class="p">:</span> <span class="nx">Photo</span><span class="p">[];</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">Nest</code>에서 사용방법이 큰 차이가 없습니다. 이걸 보면 typeorm을 사용할 때 Nest공식 문서도 참고하지만 typeorm 공식문서도 참고하여 사용하면 좋을거 같습니다.</p>
+
+<h1 id="post-entity">Post Entity</h1>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">@</span><span class="nd">Entity</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">Post</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">PrimaryGeneratedColumn</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">title</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">title</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">content</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">content</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">writer</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">writer</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">()</span>
+  <span class="nx">created_date</span><span class="p">:</span> <span class="nb">Date</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">()</span>
+  <span class="nx">modified_date</span><span class="p">:</span> <span class="nb">Date</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">view</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">view</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="c1">//User 엔티티와 1(User) : N(Post) 관계</span>
+  <span class="p">@</span><span class="nd">ManyToOne</span><span class="p">((</span><span class="kd">type</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">User</span><span class="p">,</span> <span class="p">(</span><span class="nx">user</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">user</span><span class="p">.</span><span class="nx">posts</span><span class="p">)</span>
+  <span class="p">@</span><span class="nd">JoinColumn</span><span class="p">([{</span> <span class="na">referencedColumnName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span> <span class="p">}])</span>
+  <span class="nx">user</span><span class="p">:</span> <span class="nx">User</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">OneToMany</span><span class="p">((</span><span class="kd">type</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Comment</span><span class="p">,</span> <span class="p">(</span><span class="nx">comment</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">comment</span><span class="p">.</span><span class="nx">post</span><span class="p">)</span>
+  <span class="nx">comments</span><span class="p">:</span> <span class="nx">Comment</span><span class="p">[];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="comment-entity">Comment Entity</h1>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">@</span><span class="nd">Entity</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">Comment</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">PrimaryGeneratedColumn</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">title</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">title</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">content</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">content</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">varchar</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">writer</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">writer</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">()</span>
+  <span class="nx">created_date</span><span class="p">:</span> <span class="nb">Date</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">()</span>
+  <span class="nx">modified_date</span><span class="p">:</span> <span class="nb">Date</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">userId</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">userId</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">Column</span><span class="p">({</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">postId</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">})</span>
+  <span class="nx">postId</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">ManyToOne</span><span class="p">((</span><span class="kd">type</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">User</span><span class="p">,</span> <span class="p">(</span><span class="nx">user</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">user</span><span class="p">.</span><span class="nx">comments</span><span class="p">)</span>
+  <span class="p">@</span><span class="nd">JoinColumn</span><span class="p">({</span> <span class="na">referencedColumnName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span> <span class="p">})</span>
+  <span class="nx">user</span><span class="p">:</span> <span class="nx">User</span><span class="p">;</span>
+
+  <span class="p">@</span><span class="nd">ManyToOne</span><span class="p">((</span><span class="kd">type</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Post</span><span class="p">,</span> <span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">post</span><span class="p">.</span><span class="nx">comments</span><span class="p">)</span>
+  <span class="p">@</span><span class="nd">JoinColumn</span><span class="p">({</span> <span class="na">referencedColumnName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">id</span><span class="dl">'</span> <span class="p">})</span>
+  <span class="nx">post</span><span class="p">:</span> <span class="nx">Post</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

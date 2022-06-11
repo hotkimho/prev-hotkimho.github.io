@@ -1,0 +1,447 @@
+I"��<h1 id="1-fork"><strong>1. fork</strong></h1>
+<h2 id="1-헤더파일">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pid_t</span> <span class="nf">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값">3. 반환 값</h2>
+<p>성공 시 부모 프로세스는 <code class="language-plaintext highlighter-rouge">자식 프로세스의 프로세스 ID</code> 리턴<br />
+자식 프로세스는 <code class="language-plaintext highlighter-rouge">0</code> 리턴<br />
+실패 시 <code class="language-plaintext highlighter-rouge">EOF</code> 리턴</p>
+
+<h2 id="4-함수-설명">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">fork</code>함수는 프로세스를 생성하는 함수입니다.<br />
+새롭게 생성된 프로세스를 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>라고 하고 자식 프로세스를 만든 프로세스를 <code class="language-plaintext highlighter-rouge">부모 프로세스</code>라고 합니다.<br />
+그리고 생성된 프로세스는 <code class="language-plaintext highlighter-rouge">프로세스 ID</code>라는 번호를 부여받아 운영체제에서 관리 하게 됩니다.<br />
+우리 입장에선 프로세스 ID를 확인해도 이게 자식인지, 부모인지 구분할 수 없습니다.<br />
+두 프로세스를 구분하는 유일한 방법은 fork함수의 <code class="language-plaintext highlighter-rouge">return value</code>을 확인하는 것입니다.<br />
+fork함수는 프로세스 ID(이하 pid)를 반환합니다. 부모는 <code class="language-plaintext highlighter-rouge">자식 프로세스의 pid</code>를 반환하고, 자식은 <code class="language-plaintext highlighter-rouge">0</code>을 반환합니다.<br />
+즉 fork함수의 반환값이 0이면 자식 프로세스, 아니면 부모 프로세스를 의미합니다.<br />
+fork가 정상적으로 실행되지 않으면 <code class="language-plaintext highlighter-rouge">-1</code>을 반환하기 때문에 이 경우는 예외처리를 별도로 해주어야 합니다.</p>
+
+<h2 id="5-예시-코드">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="c1">//프로세스 ID를 저장할 변수</span>
+	<span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"프로세스 생성 실패</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	
+	<span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"(자식 프로세스) fork 리턴 값 : %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+	<span class="k">else</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"(부모 프로세스) fork 리턴 값 : %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"PID(%d) 종료</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/1.return_value.png" alt="1.return value" /></p>
+
+<p>코드를 보면 fork함수의 반환값을 <code class="language-plaintext highlighter-rouge">pid</code>변수에 담고, pid값이 0이면 자식 프로세스의 <code class="language-plaintext highlighter-rouge">pid 반환값</code><br />
+, pid값이 0이 아니면 부모 프로세스의 <code class="language-plaintext highlighter-rouge">pid 반환값</code>을 출력한다.<br />
+결과를 보면 부모 pid 반환값은 20573, 자식의 pid 반환값은 0을 의미한다는 걸 알 수 있다.<br />
+그리고 실행 순서가 부모 실행 -&gt; 부모 종료 -&gt; 자식 실행 -&gt; 자식 종료 순서로 결과가 나왔지만 항상 이 순서를 보장하지 않는다. 즉 <code class="language-plaintext highlighter-rouge">순차적으로 실행</code>되는게 아님을 주의 해야 한다.</p>
+
+<h1 id="2-wait"><strong>2. wait</strong></h1>
+<h2 id="1-헤더파일-1">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/wait.h&gt;
+#include &lt;sys/types.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-1">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pid_t</span> <span class="nf">wait</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">wstatus</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-1">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">종료된 자식 프로세스의 프로세스 ID 반환</code>
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-1">4. 함수 설명</h2>
+<p>함수의 이름 그대로 기다리는 함수이다. <br />
+어떤걸 기다리냐면 <code class="language-plaintext highlighter-rouge">fork</code>를 사용해 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>를 생성했을 때, <code class="language-plaintext highlighter-rouge">부모 프로세스</code>에서 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>가 종료될 때 까지 기다린다. <br />
+하지만 자식 프로세스가 종료 되지 않는다면 부모 프로세스에서 <code class="language-plaintext highlighter-rouge">무한 대기</code>상태가 될 수 있다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>그럼 왜 자식 프로세스가 먼저 실행되고 종료되길 기다리는가??
+fork 함수가 실행되면 부모와 자식 프로세스의 실행 순서를 보장할 수 없다고 했다.   
+부모 프로세스가 먼저 종료되면 자섹 프로세스는 고아 프로세스(PPID(1))가 된다.  
+이 문제를 방지하기 위해 wait을 사용한다.
+</code></pre></div></div>
+<h2 id="5-예시-코드-1">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="c1">//프로세스 ID를 저장할 변수</span>
+	<span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">wstatus</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"프로세스 생성 실패</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="p">}</span>
+	
+	<span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"자식 프로세스 시작</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"Child : %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="p">}</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"자식 프로세스 종료</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">else</span>
+	<span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"부모 프로세스 시작</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"부모 PID: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">getpid</span><span class="p">());</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"자식 PID: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">pid</span><span class="p">);</span>
+		<span class="kt">int</span> <span class="n">child_pid</span> <span class="o">=</span> <span class="n">wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wstatus</span><span class="p">);</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"wait 인자값: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">wstatus</span><span class="p">);</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"wait 반환값: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">child_pid</span><span class="p">);</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"부모 프로세스 종료</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/2.return_value.png" alt="return value2" />
+위 결과를 보면 <code class="language-plaintext highlighter-rouge">부모 프로세스 -&gt; 자식 프로세스</code> 순서로 실행됐지만 부모 프로세스에서 자식 프로세서가 종료되기를 기다린다. <br />
+그리고 <code class="language-plaintext highlighter-rouge">wait</code> 함수는 <code class="language-plaintext highlighter-rouge">종료된 자식 프로세스의 PID</code>를 반환한다.</p>
+
+<h1 id="3-waitpid"><strong>3. waitpid</strong></h1>
+<h2 id="1-헤더파일-2">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/wait.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-2">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pid_t</span> <span class="nf">waitpid</span><span class="p">(</span><span class="n">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">status</span><span class="p">,</span> <span class="kt">int</span> <span class="n">options</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-2">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">종료된 자식 프로세스의 프로세스 ID 반환</code>
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-2">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">waitpid</code> 함수는 <code class="language-plaintext highlighter-rouge">wait</code> 함수와 같이 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>의 상태를 획득하고 자원을 수거 및 반환하는 함수이다. <br />
+인자는 3개(pid_t pid, int *status, int options)를 받으며, <code class="language-plaintext highlighter-rouge">반환값과 2번 째 인자</code>는 <code class="language-plaintext highlighter-rouge">wait함수와 동일</code>하다. 그래서 1, 3번만 설명을 하겠다. <br />
+그 전에 waitpid 와 wait의 차이를 알아보자 <br />
+wait 함수는 fork를 통해 생성한 <code class="language-plaintext highlighter-rouge">자식</code>이 <code class="language-plaintext highlighter-rouge">1개가 아니라 여러 개</code>인 경우, wait 함수를 사용한 <code class="language-plaintext highlighter-rouge">부모 프로세스</code>는 종료된 임의의 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>를 받는다. 즉 특정한 자식 프로세스를 지목할 수 없다. <code class="language-plaintext highlighter-rouge">waitpid</code> 함수는 이런 문제를 <code class="language-plaintext highlighter-rouge">pid</code>인자를 받음으로써 해결할 수 있게 한다.</p>
+
+<p><strong>첫 번째 인자</strong></p>
+<div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align: left">첫 번째 인자</th>
+        <th style="text-align: left">내용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left">pid가 -1인 경우</td>
+        <td style="text-align: left">임의의 자식 프로세스를 기다린다</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">pid가 양수인 경우</td>
+        <td style="text-align: left">프로세스 ID가 pid인 자식 프로세스를 기다린다</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">pid가 -1 보다 작은 경우</td>
+        <td style="text-align: left">프로세스 그룹 ID가 pid의 절대값과 같은 자식을 기다린다</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">pid가 0인 경우</td>
+        <td style="text-align: left">waitpid 호출한 프로세스(부모)ㅇ의 프로세스 그룹 PID와 같은 프로세스 그룹 ID를 가진 프로세스를 기다린다</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<p><strong>세 번째 인자</strong></p>
+<div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align: left">세 번째 인자</th>
+        <th style="text-align: left">내용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left">WNOHANG</td>
+        <td style="text-align: left">자식 프로세스의 종료를 기다리지 않고 상태를 반환한다</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">WUNTRACED</td>
+        <td style="text-align: left">중단된 자식 프로세스의 상태를 반환한다</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">WCONTINUED</td>
+        <td style="text-align: left">중단되었다가 다시 실행된 자식 프로세스의 상태를 반환한다.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<h1 id="4-pipe"><strong>4. pipe</strong></h1>
+<h2 id="1-헤더파일-3">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-3">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">pipe</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-3">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">0</code>  <br />
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-3">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">pipe</code>는 <code class="language-plaintext highlighter-rouge">프로세스간 통신</code>을 할 때 사용되는 기법이다. pipe는 <code class="language-plaintext highlighter-rouge">IPC</code>의 기법중 하나로 모든 유닉스 시스템이 제공한다.
+<span class="fs-2">
+<a href="https://ko.wikipedia.org/wiki/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4_%EA%B0%84_%ED%86%B5%EC%8B%A0" class="btn">IPC</a>
+</span> <br />
+<code class="language-plaintext highlighter-rouge">pipe</code>는 원소를 2개 가지는 <code class="language-plaintext highlighter-rouge">int</code>형 배열을 인자로 받는다. <br />
+<code class="language-plaintext highlighter-rouge">pipe</code>함수가 정상적으로 실행되면 커널영역에 파이프가 생성된다.</p>
+
+<p><img src="/docs/pipex/images/4.pipe_1.png" alt="pipe1" />
+파이프는 커널영역에 생성되고, 생성한 프로세스는 생성한 파이프에 대한 <code class="language-plaintext highlighter-rouge">파일 디스크럽터</code>를 갖는다. 파일디스크립터 fd[0]은 <code class="language-plaintext highlighter-rouge">읽기</code>, fd[1]은 <code class="language-plaintext highlighter-rouge">쓰기</code>용 파이프입니다. 그래서 fd[1]에 데이터를 쓰게 되면 fd[0]을 통해 데이터를 읽을 수 있습니다.</p>
+
+<p>파이프를 이용해 <code class="language-plaintext highlighter-rouge">다른 프로세스(부모자식)간 통신</code>을 하려면 어떻게 해야할까? <br />
+우선 <code class="language-plaintext highlighter-rouge">fork</code>를 통해 자식 프로세스를 생성한다. <strong>여기서 중요한 것은 자식 프로세스를 생성할 때 부모 프로세스의 파일 디스크립터도 복제된다.</strong> 그래서 <code class="language-plaintext highlighter-rouge">부모 프로세스</code>에서 fd[1]에 값을 쓰면 <code class="language-plaintext highlighter-rouge">자식 프로세스</code>의 fd[0]을 통해 읽을 수 있다.</p>
+
+<p><img src="/docs/pipex/images/4.pipe_2.png" alt="pipe2" />
+그림을 보면 <code class="language-plaintext highlighter-rouge">parent</code>에서 <code class="language-plaintext highlighter-rouge">fork</code>를 하고 파일 디스크립터 <code class="language-plaintext highlighter-rouge">fd[1]</code>을 이용해 파이프에 데이터를 <code class="language-plaintext highlighter-rouge">write</code>하면, <code class="language-plaintext highlighter-rouge">child</code>에서는 같은 파일디스크립터를 공유하고 있으므로 <code class="language-plaintext highlighter-rouge">fd[0]</code>을 이용해 데이터를 <code class="language-plaintext highlighter-rouge">read</code>하면 된다.</p>
+
+<h2 id="5-예시-코드-2">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">fd</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+	<span class="n">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+	<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+
+	<span class="k">if</span> <span class="p">((</span><span class="n">pipe</span><span class="p">(</span><span class="n">fd</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"파이프 생성 실패</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">((</span><span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">())</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"프로세스 생성 실패</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+	
+	<span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">//자식 프로세스</span>
+	<span class="p">{</span>
+		<span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+		<span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"자식에서 읽은 값: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">else</span> <span class="c1">//부모 프로세스</span>
+	<span class="p">{</span>
+		<span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+		<span class="n">strcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="s">"부모 프로세스에서 write"</span><span class="p">);</span>
+		<span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">buf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+	<span class="p">}</span>
+	<span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/4.pipe_3.png" alt="pipe3" />
+<code class="language-plaintext highlighter-rouge">자식, 프로세스</code>를 보면 각각 사용하지 않는 파일 디스크립터는 <code class="language-plaintext highlighter-rouge">close</code>를 했습니다. <code class="language-plaintext highlighter-rouge">사용하지 않는 파일디스크립터</code>를 정리하기 위함입니다. <br />
+부모 프로세스에서 <code class="language-plaintext highlighter-rouge">부모 프로세서에서 write</code>문자열을 <code class="language-plaintext highlighter-rouge">fd[1]</code>에 write했고, 자식 프로세스에서 <code class="language-plaintext highlighter-rouge">fd[0]</code>을 통해 데이터를 read해서 출력했습니다.</p>
+
+<h1 id="5-dup"><strong>5. dup</strong></h1>
+<h2 id="1-헤더파일-4">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-4">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">dup</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-4">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">파일 디스크립터를 복사하여 반환</code> <br />
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-4">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">dup</code> 함수는 이름 그대로 <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>를 인자로 받고 복사하여 반환하는 함수입니다. 하지만 <code class="language-plaintext highlighter-rouge">복제</code>를 하는것이지 원본과 똑같은 파일디스크립터가 아닙니다. <br />
+복제할 때, 복제되는 <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>의 값은 현재 사용하고 있지 않는 가장 작은 파일 디스크립터값을 반환 합니다.</p>
+
+<h2 id="5-예시-코드-3">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">fd</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+	<span class="kt">int</span> <span class="n">dup_fd</span><span class="p">;</span>
+	<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+
+	<span class="n">pipe</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+	<span class="n">dup_fd</span> <span class="o">=</span> <span class="n">dup</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+	
+	<span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">"hi"</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+	<span class="n">read</span><span class="p">(</span><span class="n">dup_fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"dup_fd을 통해 읽어온 값: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"fd[0]: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"dup_fd: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">dup_fd</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/5.dup_1.png" alt="dup1" /></p>
+
+<p>위 코드에서 <code class="language-plaintext highlighter-rouge">dup_fd</code>에 <code class="language-plaintext highlighter-rouge">fd[0]</code>를 복제 했습니다. fd[0]의 <code class="language-plaintext highlighter-rouge">파일 디스크립터 테이블</code>의값이 <code class="language-plaintext highlighter-rouge">3</code>인 경우 fd[0]과 dup_fd를 출력했을 때, 같은 값을 가지고 있지만 출력되는 <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>의 값이 다릅니다. <br />
+그 이유는 복제된 <code class="language-plaintext highlighter-rouge">dup_fd</code>는 <code class="language-plaintext highlighter-rouge">파일 디스크립터 테이블</code> 새롭게 추가되고 <code class="language-plaintext highlighter-rouge">fd[0]</code>가 가르키는 <code class="language-plaintext highlighter-rouge">파일 테이블</code>을 같이 가르킵니다. 즉 함수 이름 dup에 맞게 새롭게 복제되어 같은 값을 가르키는 파일 디스크립터를 반환합니다. <br />
+그래서 <code class="language-plaintext highlighter-rouge">dup</code>함수를 사용했으면 복제된 <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>변수도 close해줘야 합니다.</p>
+
+<h1 id="6-dup2"><strong>6. dup2</strong></h1>
+<h2 id="1-헤더파일-5">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-5">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pid_t</span> <span class="nf">dup2</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-5">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">두 번째 매개변수 파일 디스크립터 반환</code>  <br />
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-5">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">dup</code>함수는 매개 변수에 2개의 <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>를 입력 받습니다. 그리고 <code class="language-plaintext highlighter-rouge">첫 번째 인자</code>를 <code class="language-plaintext highlighter-rouge">두 번째 인자</code>에 복제합니다. 그리고 복제된 파일 디스크립터를 반환 합니다. <br />
+만약 <code class="language-plaintext highlighter-rouge">두 번째 인자</code>가 <code class="language-plaintext highlighter-rouge">open</code>상태라면 <code class="language-plaintext highlighter-rouge">close</code>를 진행하고 복제를 진행합니다.</p>
+
+<h2 id="5-예시-코드-4">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">fd</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+	<span class="kt">int</span> <span class="n">fd2</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+	<span class="kt">int</span> <span class="n">temp_fd</span><span class="p">;</span>
+
+	<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">],</span> <span class="n">buf1</span><span class="p">[</span><span class="mi">1024</span><span class="p">],</span> <span class="n">buf2</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+
+	<span class="n">pipe</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+	<span class="n">pipe</span><span class="p">(</span><span class="n">fd2</span><span class="p">);</span>
+	<span class="n">temp_fd</span> <span class="o">=</span> <span class="n">dup2</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fd2</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+
+	<span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">"hello"</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+	<span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"fd[1]에 쓴 데이터 : %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+
+	<span class="n">write</span><span class="p">(</span><span class="n">fd2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">"kimho"</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+	<span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf1</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"fd2[1]에 쓴 데이터 : %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf1</span><span class="p">);</span>
+
+	<span class="n">write</span><span class="p">(</span><span class="n">temp_fd</span><span class="p">,</span> <span class="s">"12345"</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+	<span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buf2</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"temp_fd에 쓴 데이터 : %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buf2</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/6.dup2_1.png" alt="dup2_1" />
+<code class="language-plaintext highlighter-rouge">temp_fd = dup2(fd[1], fd2[1])</code> 코드를 실행함으로써 <code class="language-plaintext highlighter-rouge">fd[1]</code>을 <code class="language-plaintext highlighter-rouge">fd2[1]</code>에 복제하고 반환합니다. <br />
+그리고 각각 <code class="language-plaintext highlighter-rouge">fd[1], fd2[1], temp_fd</code>에 문자열을 <code class="language-plaintext highlighter-rouge">write</code>하고 <code class="language-plaintext highlighter-rouge">fd[0]</code>을 통해 <code class="language-plaintext highlighter-rouge">read</code>하면 저장한 문자열이 모두 출력된 것을 볼 수 있습니다.</p>
+
+<h1 id="7-access"><strong>7. access</strong></h1>
+<h2 id="1-헤더파일-6">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-6">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">access</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mode</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-6">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">0</code>  <br />
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-6">4. 함수 설명</h2>
+<p>파일 명대로 파일을 확인하는 함수입니다. 첫 번째 인자에 해당하는 <code class="language-plaintext highlighter-rouge">file</code>을 두 번째 인자값인 <code class="language-plaintext highlighter-rouge">mode</code>값으로 확인을 합니다. <br />
+mode값으로 파일을 검사할 때, <code class="language-plaintext highlighter-rouge">mode</code> 에 해당하는 내용이 가능하면 <code class="language-plaintext highlighter-rouge">1</code>, 실패하면 <code class="language-plaintext highlighter-rouge">-1</code>을 반환합니다. <br />
+<strong>Mode 값</strong></p>
+<div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align: left">mode</th>
+        <th style="text-align: left">내용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left">F_OK</td>
+        <td style="text-align: left">파일 존재 확인</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">R_OK</td>
+        <td style="text-align: left">읽기 확인</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">W_OK</td>
+        <td style="text-align: left">쓰기 확인</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">X_OK</td>
+        <td style="text-align: left">실행 확인</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<h1 id="8-execve"><strong>8. execve</strong></h1>
+<h2 id="1-헤더파일-7">1. 헤더파일</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span></code></pre></div></div>
+
+<h2 id="2-함수-원형-7">2. 함수 원형</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">execve</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="n">argv</span><span class="p">[],</span> <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="n">envp</span><span class="p">[]);</span>
+</code></pre></div></div>
+
+<h2 id="3-반환-값-7">3. 반환 값</h2>
+<p>성공 시 <code class="language-plaintext highlighter-rouge">별도의 프로세스가 생성되고 정상적으로 실행되면 0 반환</code>  <br />
+실패 시 <code class="language-plaintext highlighter-rouge">-1</code></p>
+
+<h2 id="4-함수-설명-7">4. 함수 설명</h2>
+<p><code class="language-plaintext highlighter-rouge">execve</code> 함수는 <code class="language-plaintext highlighter-rouge">exec</code> 계열의 함수입니다. <code class="language-plaintext highlighter-rouge">exec</code> 계열 함수는 보통 매개변수로 입력된 파일을 실행하는 함수입니다. <br />
+<code class="language-plaintext highlighter-rouge">execve</code> 함수는 3개의 인자를 받습니다. 첫 번째 인자로 받은 <code class="language-plaintext highlighter-rouge">pathname</code>의 파일을 실행하고, <code class="language-plaintext highlighter-rouge">argv</code>, <code class="language-plaintext highlighter-rouge">envp</code> 두, 세 번째 매개변수 값을 전달합니다. <br />
+첫 번째 인자에 대해 <code class="language-plaintext highlighter-rouge">실행 권한</code> 확인이 필요하며 이는 <code class="language-plaintext highlighter-rouge">access</code>함수를 통해 검사가 가능합니다.
+<code class="language-plaintext highlighter-rouge">argv</code>는 첫 번째 인자로 실행되는 파일에 대한 옵션입니다. 예를 들어 첫 번째 파일이 <code class="language-plaintext highlighter-rouge">ls</code>명령을 실행하면 <code class="language-plaintext highlighter-rouge">argv</code>안에 <code class="language-plaintext highlighter-rouge">argv[]={"ls", "-l"}</code> 와 같이 옵션값이 들어가며 가장 <code class="language-plaintext highlighter-rouge">첫 번째</code>인덱스에는 명령어의 이름이 들어가야 합니다. <br />
+<code class="language-plaintext highlighter-rouge">evnp</code>는 환경 설정 파일이다.
+<code class="language-plaintext highlighter-rouge">argv, envp</code>모두 char *[] 배열 형태이기에 마지막 인덱스에 <code class="language-plaintext highlighter-rouge">NULL</code>값을 넣어줘야 한다.</p>
+
+<h2 id="5-예시-코드-5">5. 예시 코드</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">execve</span><span class="p">(</span><span class="s">"/bin/ls"</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="/docs/pipex/images/8.evecve_1.png" alt="execve_1" />
+코드를 보면 첫 번째 인자로 <code class="language-plaintext highlighter-rouge">/bin/ls</code> 파일을 지정했고 실핼할 때 <code class="language-plaintext highlighter-rouge">-l</code>옵션을 주었다. <br />
+그래서 <code class="language-plaintext highlighter-rouge">ls -l</code>명령어가 실행된다.</p>
+:ET

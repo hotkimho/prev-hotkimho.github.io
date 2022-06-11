@@ -1,0 +1,63 @@
+I"d<h1 id="데이터베이스"><strong>데이터베이스</strong></h1>
+<p>데이터베이스는 <code class="language-plaintext highlighter-rouge">mysql</code>(amazon RDS)과 <code class="language-plaintext highlighter-rouge">typeorm</code>을 사용합니다.</p>
+
+<h1 id="데이터베이스-연결"><strong>데이터베이스 연결</strong></h1>
+<h2 id="패키지-설치">패키지 설치</h2>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">mysql</code>, <code class="language-plaintext highlighter-rouge">typerom</code> 패키지를 설치합니다.</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">npm install --save @nestjs/typeorm typeorm mysql2</code></p>
+
+<ol>
+  <li>데이터베이스 정보를 <code class="language-plaintext highlighter-rouge">dotenv</code> 패키지를 사용해 관리하기 때문에 같이 설치해줍니다.</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">npm i --save @nestjs/config</code></p>
+
+<h2 id="dotenv-사용">dotenv 사용</h2>
+<p><code class="language-plaintext highlighter-rouge">dotenv</code>는 민감한 정보를 소스파일에 노출되지 않게 하는 패키지로, <code class="language-plaintext highlighter-rouge">.env</code>파일 안에 <code class="language-plaintext highlighter-rouge">키=값</code>의 형태로 데이터를 저장하여 사용합니다.<br />
+<code class="language-plaintext highlighter-rouge">.env</code> 파일안에 데이터베이스 정보를 저장하고 <code class="language-plaintext highlighter-rouge">process.env.키</code> 방식으로 사용합니다.<br />
+먼저 <code class="language-plaintext highlighter-rouge">nestjs</code>에서 <code class="language-plaintext highlighter-rouge">dotenv</code>를 사용하도록 설정해줍니다.</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//app.module</span>
+<span class="nx">imports</span><span class="p">:</span> <span class="p">[</span>
+    <span class="nx">ConfigModule</span><span class="p">.</span><span class="nx">forRoot</span><span class="p">({</span>
+      <span class="na">isGlobal</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">})</span>
+<span class="p">]</span>
+<span class="p">...</span>
+</code></pre></div></div>
+<p>이렇게 설정하면 앞으로 <code class="language-plaintext highlighter-rouge">process.env</code>를 <code class="language-plaintext highlighter-rouge">전역변수</code>처럼 사용할 수 있습니다.</p>
+
+<h2 id="typeorm-연결">typeorm 연결</h2>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">@</span><span class="nd">Module</span><span class="p">({</span>
+  <span class="na">imports</span><span class="p">:</span> <span class="p">[</span>
+    <span class="nx">ConfigModule</span><span class="p">.</span><span class="nx">forRoot</span><span class="p">({</span>
+      <span class="na">isGlobal</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="nx">TypeOrmModule</span><span class="p">.</span><span class="nx">forRoot</span><span class="p">({</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mysql</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">host</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MYSQLDB</span><span class="p">,</span>
+      <span class="na">port</span><span class="p">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MYSQLPORT</span><span class="p">),</span>
+      <span class="na">username</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MYSQLADMIN</span><span class="p">,</span>
+      <span class="na">password</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">MYSQLPASSWORD</span><span class="p">,</span>
+      <span class="na">database</span><span class="p">:</span> <span class="dl">'</span><span class="s1">board</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">entities</span><span class="p">:</span> <span class="p">[],</span>
+      <span class="na">synchronize</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">}),</span>
+  <span class="p">],</span>
+  <span class="na">controllers</span><span class="p">:</span> <span class="p">[</span><span class="nx">AppController</span><span class="p">],</span>
+  <span class="na">providers</span><span class="p">:</span> <span class="p">[</span><span class="nx">AppService</span><span class="p">],</span>
+<span class="p">})</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">AppModule</span> <span class="p">{}</span>
+</code></pre></div></div>
+<p>amazon RDS의 값을 <code class="language-plaintext highlighter-rouge">.env</code>안에 넣어서 사용합니다.<br />
+<code class="language-plaintext highlighter-rouge">host</code> - RDS 엔드 포인트<br />
+<code class="language-plaintext highlighter-rouge">port</code> - RDS PORT<br />
+<code class="language-plaintext highlighter-rouge">username</code> - RDS ADMIN<br />
+<code class="language-plaintext highlighter-rouge">password</code> - RDS ADMIN PASSWORD<br />
+<code class="language-plaintext highlighter-rouge">entities</code> - 불러올 DB entity</p>
+
+<p><img src="/docs/nestjs_board/images/connect_DB_1.png" alt="db image" />
+연결이 잘 된걸 볼 수 있습니다.</p>
+:ET

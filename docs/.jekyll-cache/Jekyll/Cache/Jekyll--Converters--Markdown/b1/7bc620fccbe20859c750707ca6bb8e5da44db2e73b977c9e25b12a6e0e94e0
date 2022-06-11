@@ -1,0 +1,43 @@
+I"<h2 id="파일-디스크립터file-descriptor">파일 디스크립터(File Descriptor)</h2>
+<p><code class="language-plaintext highlighter-rouge">파일 디스크립터</code>는 리눅스, 유닉스 계열의 시스템에서 프로세스가 파일을 다룰 때 사용하는 값으로, <code class="language-plaintext highlighter-rouge">0이 아닌 정수값</code>을 할당받아 사용합니다.</p>
+
+<p>유닉스, 리눅스 시스템에서 대부분을 <code class="language-plaintext highlighter-rouge">파일</code>로 취급하며, <code class="language-plaintext highlighter-rouge">정규 파일, 디렉토리, 파이프, 블록 디바이스</code>등등 모든 객체들은 파일로 관리됩니다. <code class="language-plaintext highlighter-rouge">파일 디스크립터</code>는 앞에 있는 파일들에 접근할 때 사용합니다.</p>
+
+<p>앞서 파일 디스크립터는 0이 아닌 정수값이라고 했는데 정수값으로 어떻게 파일을 관리하는지 의아할 수 있습니다. 이 정수값은 <code class="language-plaintext highlighter-rouge">파일 디스크립터 테이블</code>의 인덱스를 의미합니다. 그래서 파일 디스크립터가 <code class="language-plaintext highlighter-rouge">3</code>값을 가지면 <code class="language-plaintext highlighter-rouge">파일 디스크립터 테이블의 3번째 인덱스</code>를 의미하며, <code class="language-plaintext highlighter-rouge">3번째 인덱스</code>는 해당 파일의 <code class="language-plaintext highlighter-rouge">파일 테이블</code>을 가리킵니다.</p>
+
+<p><img src="../../_site/docs/pipex/images/filedescriptor_1.png" alt="1" /></p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">"test.txt"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"fd : %d"</span><span class="p">,</span> <span class="n">fd</span><span class="p">);</span>
+<span class="c1">// fd : 3 출력</span>
+</code></pre></div></div>
+<p>그림과 코드를 같이 보면 <code class="language-plaintext highlighter-rouge">open</code>함수로 <code class="language-plaintext highlighter-rouge">test.txt</code>파일을 열었으며 파일 디스크립터는 3이 출력됩니다. 이 의미는 <code class="language-plaintext highlighter-rouge">파일 디스크립터 테이블의 3번째 인덱스</code>가 <code class="language-plaintext highlighter-rouge">test.txt</code> 파일 테이블을 가리키고 있는걸 의미합니다.<br />
+파일 테이블은 <code class="language-plaintext highlighter-rouge">파일에 대한 정보</code>와 <code class="language-plaintext highlighter-rouge">Inode</code>를 가지고 있습니다. Inode는 실제 파일 데이터에 대한 <code class="language-plaintext highlighter-rouge">시작 주소</code>를 가지고 있습니다. 즉 <code class="language-plaintext highlighter-rouge">실제 파일 위치</code>를 의미합니다.<br />
+그리고 파일디스크립터의 정수는 <code class="language-plaintext highlighter-rouge">할당 되지 않은</code> 가장 작은 수 부터 정수를 할당합니다. 하지만 1이 아닌 3이 할당된 이유는 <code class="language-plaintext highlighter-rouge">0, 1, 2</code>에 값을 이미 가지고 있기 때문입니다.</p>
+
+<div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align: left">파일 디스크립터</th>
+        <th style="text-align: left">의미</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left">0</td>
+        <td style="text-align: left">표준 입력</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">1</td>
+        <td style="text-align: left">표준 출력</td>
+      </tr>
+      <tr>
+        <td style="text-align: left">2</td>
+        <td style="text-align: left">표준 에러</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+:ET

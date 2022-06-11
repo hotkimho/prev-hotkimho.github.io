@@ -2,37 +2,631 @@
     "doc": "42Seoul",
     "title": "42Seoul",
     "content": " ",
-    "url": "http://localhost:4000/docs/42Seoul",
-    "relUrl": "/docs/42Seoul"
+    "url": "http://localhost:4000/docs/42seoul",
+    "relUrl": "/docs/42seoul"
   },"1": {
+    "doc": "Common Instructions",
+    "title": "Common Instructions",
+    "content": ". | 여러분의 프로젝트는 Norminette 기준에 따라 작성되어야 합니다. 보너스 파일이나 함수가 있는 경우, 해당 파일/함수도 Norminette 기준을 체크하는 데에 포함해야 하며, Norminette 에러가 발생할 시에는 여러분의 프로젝트는 0점을 받게 됩니다. | 정의되지 않는 동작인 경우 이외에는 여러분이 작성하신 프로그램이 예기치 않게 종료되면 안됩니다 (segmentation fault, bus error, double free 등). 만약 여러분의 프로그램이 예기치 않게 종료된다면, 작동하지 않은 것으로 간주되어 평가에서 0점을 받게 됩니다. | 힙에 선언한 모든 메모리 영역은 free로 처리되어야 합니다. 메모리 누수는 용납되어서는 안됩니다. | 서브젝트가 요구할 시 Makefile을 제출하여야 합니다. 여러분이 작성하신 Makefile은 -Wall -Wextra -Werror 플래그에 따라 컴파일을 해야하며, 컴파일 이후에 다시 리링크되지 않아야 합니다. | 여러분이 작성하신 Makefile 에서는 다음의 룰을 정의하고 있어야 합니다. - $(NAME), all, clean, fclean, re . | 프로젝트에 보너스를 제출하려면, Makefile에 bonus 규칙을 포함해야하며, 해당 규칙은 프로젝트의 메인 파트에서 금지되었던 모든 다양한 헤더, 라이브러리,또는 함수들을 Makefile에 추가할 수 있습니다. 보너스는 반드시 _bonus.{c/h} 라는 다른 파일에 있어야 합니다. 필수 파트와 보너스 파트는 개별적으로 평가될 것입니다. | 해당 프로젝트에서 libft를 사용하는 경우, 해당 라이브러리의 소스와 Makefile을 libft 폴더에 복사해야 합니다. 프로젝트의 Makefile은 Makefile을 사용하여 라이브러리를 컴파일한 다음에 여러분이 작성하신 프로젝트를 컴파일 해야합니다. | 제출할 필요가 없고 채점되지 않더라도 우리는 여러분이 프로젝트를 위한 테스트 프로그램을 만들 것을 권장합니다. 이 프로그램은 여러분의 과제물과 동료들의 과제물을 쉽게 검증할 기회를 제공할 것입니다. 평가하는 동안 이 테스트 프로그램들이 특히 유용하다는 것을 알게 될 것입니다. 평가 중에는 여러분의 테스트 프로그램과 평가 받는 동료의 테스트 프로그램들을 자유롭게 사용할 수 있습니다. | 할당된 git 저장소에 과제물을 제출하세요. 오직 git 저장소에 있는 과제물만 채점 할 것입니다. Deepthought가 평가를 하게 된다면, 동료평가 이후에 수행됩니다. 만약 Deepthought가 평가 중 오류가 발생한다면, 그 즉시 평가는 중지될 것입니다. | 실행파일은 각각 Project name로 이름을 지어야 합니다. | . ",
+    "url": "http://localhost:4000/docs/42seoul/common-instructions",
+    "relUrl": "/docs/42seoul/common-instructions"
+  },"2": {
+    "doc": "File Descriptor",
+    "title": "파일 디스크립터(File Descriptor)",
+    "content": "파일 디스크립터는 리눅스, 유닉스 계열의 시스템에서 프로세스가 파일을 다룰 때 사용하는 값으로, 0이 아닌 정수값을 할당받아 사용합니다. 유닉스, 리눅스 시스템에서 대부분을 파일로 취급하며, 정규 파일, 디렉토리, 파이프, 블록 디바이스등등 모든 객체들은 파일로 관리됩니다. 파일 디스크립터는 앞에 있는 파일들에 접근할 때 사용합니다. 앞서 파일 디스크립터는 0이 아닌 정수값이라고 했는데 정수값으로 어떻게 파일을 관리하는지 의아할 수 있습니다. 이 정수값은 파일 디스크립터 테이블의 인덱스를 의미합니다. 그래서 파일 디스크립터가 3값을 가지면 파일 디스크립터 테이블의 3번째 인덱스를 의미하며, 3번째 인덱스는 해당 파일의 파일 테이블을 가리킵니다. fd = open(\"test.txt\", O_RDONLY); printf(\"fd : %d\", fd); // fd : 3 출력 . 그림과 코드를 같이 보면 open함수로 test.txt파일을 열었으며 파일 디스크립터는 3이 출력됩니다. 이 의미는 파일 디스크립터 테이블의 3번째 인덱스가 test.txt 파일 테이블을 가리키고 있는걸 의미합니다. 파일 테이블은 파일에 대한 정보와 Inode를 가지고 있습니다. Inode는 실제 파일 데이터에 대한 시작 주소를 가지고 있습니다. 즉 실제 파일 위치를 의미합니다. 그리고 파일디스크립터의 정수는 할당 되지 않은 가장 작은 수 부터 정수를 할당합니다. 하지만 1이 아닌 3이 할당된 이유는 0, 1, 2에 값을 이미 가지고 있기 때문입니다. | 파일 디스크립터 | 의미 | . | 0 | 표준 입력 | . | 1 | 표준 출력 | . | 2 | 표준 에러 | . ",
+    "url": "http://localhost:4000/docs/pipex/file_descriptor/#%ED%8C%8C%EC%9D%BC-%EB%94%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0file-descriptor",
+    "relUrl": "/docs/pipex/file_descriptor/#파일-디스크립터file-descriptor"
+  },"3": {
+    "doc": "File Descriptor",
+    "title": "File Descriptor",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/file_descriptor/",
+    "relUrl": "/docs/pipex/file_descriptor/"
+  },"4": {
+    "doc": "Functions",
+    "title": "1. gettimeofday",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-gettimeofday",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-gettimeofday"
+  },"5": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;sys/time.h&gt; . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-헤더파일"
+  },"6": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int gettimeofday(struct timeval *tv, struct timezone *tz); . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-함수-원형"
+  },"7": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-반환-값"
+  },"8": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "gettimeofday 함수는 시간을 측정할 때 사용하는 함수입니다 2개의 매개변수를 받으며 각각 timeval, timezone 구조체의 주소를 받습니다. timezon 구조체는 현재 사용되지 않고 있으며 이 필드가 사용된 경우 버그로 판단되어 무시된다고 합니다. 그래서 호출할 때 NULL값을 넘겨줍니다. timeval 구조체는 다음과 같이 정의되어 있습니다. struct timeval { long tv_sec; // 초 long tv_usec; // 마이크로초 } . 각각 sec, usec 변수에는 1970-01-01 00:00:00 +0000 (UTC) 이후 현재까지 경과된 초와 마이크로초를 저장합니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-함수-설명"
+  },"9": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;sys/time.h&gt; #include &lt;stdlib.h&gt; int main() { struct timeval startTime, endTime; double time; gettimeofday(&amp;startTime, NULL); _sleep(2700); gettimeofday(&amp;endTime, NULL); time = endTime.tv_sec + endTime.tv_usec / 1000000.0 - startTime.tv_sec - startTime.tv_usec / 1000000.0; printf(\"%.2f\\n\", time); } . timeval 구조체 startTime, endTime를 만들고 시작할 때, 끝날 때 각각 함수를 호출 했습니다. startTime 시작할 때 시간값을 가지고 있고, endTime에는 sleep(2700) 시간 이후의 시간값을 가지고 있습니다. endTime에서 startTime을 빼면 두 함수 사이의 걸린 시간을 알 수 있습니다. 위 결과에선 2.7의 값을 가지고 있으며 약간의 오차가 있었습니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-예시-코드"
+  },"10": {
+    "doc": "Functions",
+    "title": "2. pthread_create",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-pthread_create",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-pthread_create"
+  },"11": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;pthread.h&gt; . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-1",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-헤더파일-1"
+  },"12": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int pthread_create(pthread_t *restrict thread, const pthread_attr_t *restrict attr, void *(*start_routine)(void *), void *restrict arg); . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-1",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-함수-원형-1"
+  },"13": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 반환 실패 시 error number 반환 . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-1",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-반환-값-1"
+  },"14": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "현재 프로세스에서 스레드를 생성하고 루틴(함수)을 실행시킵니다. 4개의 매개변수를 가지고 있습니다 . | 쓰레드가 생성되었을 때, 생성된 쓰레드의 식별자(id)입니다 | 쓰레드와 관련된 특성을 지정하는데 사용합니다. NULL 값이 들어오면 기본값으로 쓰레드가 생성됩니다 | 쓰레드를 실행할 함수입니다. | 3번의 실행할 함수에 인자값입니다. | . fork처럼 쓰레드도 쓰레드를 생성한 부모 쓰레드가 종료되면 자식 쓰레드 또한 종료됩니다. 그외에 아래와 같은 종료 조건이 있습니다 . | pthread_exit(3) 함수를 호출하여 종료합니다. | 세 번째 매개변수인 routine 함수를 리턴합니다. 이 종료는 pthread_exit(3)와 동일합니다. | pthread_cancel(3) 함수에 의한 취소 | . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-1",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-함수-설명-1"
+  },"15": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;pthread.h&gt; #include &lt;stdlib.h&gt; void *routine(void *param) { int *arr = (int *)param; int i = 0; for (int i = 0; i &lt; 5; i++) { printf(\"%d\\n\", arr[i]); sleep(1); } } int main() { pthread_t thread_id; int state; int main_Arr[5] = { 1, 2, 3 ,4 ,5}; int thread_Arr[5] = { 6, 7, 8 , 9, 10}; pthread_create(&amp;thread_id, NULL, routine, (void *)thread_Arr); routine((void *) main_Arr); pthread_join(thread_id, (void **)&amp;state); } . 코드를 보면 생성한 자식 쓰레드에 thread_Arr 배열을 넘겨줘서 출력을 실행하고, 부모 쓰레드에서 main_Arr 배열을 출력합니다. 한번 출력 시 1초의 텀을 줘서 위 사진처럼 순차적으로 출력됩니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-1",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-예시-코드-1"
+  },"16": {
+    "doc": "Functions",
+    "title": "3. pthread_join",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-pthread_join",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-pthread_join"
+  },"17": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;pthread.h&gt; . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-2",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-헤더파일-2"
+  },"18": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int pthread_join(pthread_t thread, void **retval); . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-2",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-함수-원형-2"
+  },"19": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 반환 실패 시 error number 반환 . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-2",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-반환-값-2"
+  },"20": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "매개변수는 thread 식별자(id), 해당 스레드가 종료될 때 리턴값 없으면 NULL을 넣으면 된다. wait함수처럼 해당 스레드가 종료할 때까지 기다리며, 두 번째 인자로 리턴값을 받아온다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-2",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-함수-설명-2"
+  },"21": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;pthread.h&gt; #include &lt;stdlib.h&gt; void *routine(void *param) { int *arr = (int *)param; int i = 0; for (int i = 0; i &lt; 5; i++) { printf(\"%d\\n\", arr[i]); _sleep(300); } return (void *)arr[0]; } int main() { pthread_t thread_id; int state; int main_Arr[5] = { 1, 2, 3 ,4 ,5}; int thread_Arr[5] = { 6, 7, 8 , 9, 10}; pthread_create(&amp;thread_id, NULL, routine, (void *)thread_Arr); routine((void *) main_Arr); pthread_join(thread_id, (void **)&amp;state); printf(\"return value : %d\\n\", state); } . 생성된 스레드는 thread_Arr의 첫번 째 요소 값을 반환합니다. 반환된 값은 state값에 저장됩니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-2",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-예시-코드-2"
+  },"22": {
+    "doc": "Functions",
+    "title": "4. pthread_detach",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-pthread_detach",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-pthread_detach"
+  },"23": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;pthread.h&gt; . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-3",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-헤더파일-3"
+  },"24": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int pthread_detach(pthread_t thread); . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-3",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-함수-원형-3"
+  },"25": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 반환 실패 시 error number 반환 . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-3",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-반환-값-3"
+  },"26": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "매개변수로 입력된 thread 식별자를 메인 쓰레드에서 분리시키고 쓰레드의 모든 자원을 free 한다. pthread_join 함수는 쓰레드가 끝나길 기다리고 자원을 반납한다. 이 두 가지의 경우가 아니면 쓰레드가 종료되어도 쓰레드에서 생성한 자원은 메모리에 남아 있게 된다. 그래서 join or detach로 메모리를 해제 해주어야 한다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-3",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-함수-설명-3"
+  },"27": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;pthread.h&gt; #include &lt;stdlib.h&gt; void *routine(void *param) { int *arr = (int *)param; int i = 0; for (int i = 0; i &lt; 5; i++) { printf(\"%d\\n\", arr[i]); _sleep(300); } } int main() { pthread_t thread_id; int state; int main_Arr[5] = { 1, 2, 3 ,4 ,5}; int thread_Arr[5] = { 6, 7, 8 , 9, 10}; pthread_create(&amp;thread_id, NULL, routine, (void *)thread_Arr); routine((void *) main_Arr); pthread_detach(thread_id); } . join함수 대신 detach를 사용했다. 저렇게 선언 해두면 해당 쓰레드는 종료되면 자동으로 메모리를 반환한다. 주의할 점은 detach가 실행되기전 쓰레드 함수가 실행되고 종료될 수 있다. 이러면 메모리 누수로 이어진다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-3",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-예시-코드-3"
+  },"28": {
+    "doc": "Functions",
+    "title": "5. pthread_mutex_init",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-pthread_mutex_init",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-pthread_mutex_init"
+  },"29": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;pthread.h&gt; . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-4",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#1-헤더파일-4"
+  },"30": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr); . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-4",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#2-함수-원형-4"
+  },"31": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 반환 실패 시 error number 반환 . ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-4",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#3-반환-값-4"
+  },"32": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "뮤텍스(mutext)는 우리말로 상호 배제라는 기술로서, 같은 데이터를 사용하는 여러 개의 쓰레드들이 서로 겹치지 않게 단독으로 실행되게 하는 기술이다. 여러 개의 쓰레드들이 같은 데이터를 사용하는걸 임계영역(Critical Section)이라고 한다. 아래의 코드를 보면 문제가 뭔지 알 수 있다. #include &lt;stdio.h&gt; #include &lt;pthread.h&gt; #include &lt;stdlib.h&gt; int shared_var = 1; void *routine(void *param) { char *str = (char *)param; int i = 0; for (int i = 0; i &lt; 5; i++) { printf(\"%s : %d\\n\", str, shared_var++); _sleep(300); } } int main() { pthread_t thread_a_id; pthread_t thread_b_id; int state; int main_Arr[5] = { 1, 2, 3 ,4 ,5}; int thread_Arr[5] = { 6, 7, 8 , 9, 10}; pthread_create(&amp;thread_a_id, NULL, routine, (void *)\"thread A\"); pthread_create(&amp;thread_b_id, NULL, routine, (void *)\"thread B\"); pthread_join(thread_a_id, (void *)&amp;state); pthread_join(thread_b_id, (void *)&amp;state); } . 생성된 쓰레드는 shared_var 전역 변수를 출력하고 1을 증가시킵니다. 예제에서는 하나의 변수값만 같이 사용하므로 큰 문제가 없어보이지만 시스템이 커질수록 큰 문제가 발생할 수 있고 최악의 경우는 데드락이 발생할 수 있습니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-4",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#4-함수-설명-4"
+  },"33": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;pthread.h&gt; #include &lt;stdlib.h&gt; pthread_mutex_t mutex; int shared_var = 1; void *routine(void *param) { char *str = (char *)param; int i = 0; pthread_mutex_lock(&amp;mutex); shared_var = 1; for (int i = 0; i &lt; 5; i++) { printf(\"%s : %d\\n\", str, shared_var++); //_sleep(100); } pthread_mutex_unlock(&amp;mutex); } int main() { pthread_t thread_a_id; pthread_t thread_b_id; int state; int main_Arr[5] = { 1, 2, 3 ,4 ,5}; int thread_Arr[5] = { 6, 7, 8 , 9, 10}; pthread_mutex_init(&amp;mutex, NULL); pthread_create(&amp;thread_a_id, NULL, routine, (void *)\"thread A\"); pthread_create(&amp;thread_b_id, NULL, routine, (void *)\"thread B\"); pthread_join(thread_a_id, NULL); pthread_join(thread_b_id, NULL); } . 뮤텍스를 사용할려면 초기화를 해줘야 합니다. pthread_mutex_init(&amp;mutex, NULL) 초기화를 진행하며 두 번째 매개변수에 NULL은 기본값을 사용한다는 의미입니다. pthread_mutex_lock(&amp;mutex); /* Critical Section */ pthread_mutex_unlock(&amp;mutex); . pthread_mutex_lock, pthread_mutex_unlock 함수로 설정된 임계구역을 가진 쓰레드들은 서로 겹치지 않고 단독으로 실행됩니다. 하나의 쓰레드가 lock를 하면 다른 대기 하는 쓰레드는 unlock가 됐는데 항상 검사해야 하며 이를 busy waiting라고 합니다. 위 예시는 A가 실행되어 lock되었고 모든 루틴을 실행한 후 unlock이 됩니다. 곧바로 B 쓰레드가 요청을 하고 루틴을 실행합니다. ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-4",
+    "relUrl": "/docs/42Seoul_philosophers/functions/#5-예시-코드-4"
+  },"34": {
+    "doc": "Functions",
+    "title": "Functions",
+    "content": " ",
+    "url": "http://localhost:4000/docs/42Seoul_philosophers/functions/",
+    "relUrl": "/docs/42Seoul_philosophers/functions/"
+  },"35": {
+    "doc": "Functions",
+    "title": "1. fork",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-fork",
+    "relUrl": "/docs/pipex/functions/#1-fork"
+  },"36": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일"
+  },"37": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "pid_t fork(void); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형"
+  },"38": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 부모 프로세스는 자식 프로세스의 프로세스 ID 리턴 자식 프로세스는 0 리턴 실패 시 EOF 리턴 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92",
+    "relUrl": "/docs/pipex/functions/#3-반환-값"
+  },"39": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "fork함수는 프로세스를 생성하는 함수입니다. 새롭게 생성된 프로세스를 자식 프로세스라고 하고 자식 프로세스를 만든 프로세스를 부모 프로세스라고 합니다. 그리고 생성된 프로세스는 프로세스 ID라는 번호를 부여받아 운영체제에서 관리 하게 됩니다. 우리 입장에선 프로세스 ID를 확인해도 이게 자식인지, 부모인지 구분할 수 없습니다. 두 프로세스를 구분하는 유일한 방법은 fork함수의 return value을 확인하는 것입니다. fork함수는 프로세스 ID(이하 pid)를 반환합니다. 부모는 자식 프로세스의 pid를 반환하고, 자식은 0을 반환합니다. 즉 fork함수의 반환값이 0이면 자식 프로세스, 아니면 부모 프로세스를 의미합니다. fork가 정상적으로 실행되지 않으면 -1을 반환하기 때문에 이 경우는 예외처리를 별도로 해주어야 합니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명"
+  },"40": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;unistd.h&gt; int main(void) { //프로세스 ID를 저장할 변수 int pid; if ((pid = fork()) == -1) printf(\"프로세스 생성 실패\\n\"); if (pid == 0) printf(\"(자식 프로세스) fork 리턴 값 : %d\\n\", pid); else printf(\"(부모 프로세스) fork 리턴 값 : %d\\n\", pid); printf(\"PID(%d) 종료\\n\", pid); } . 코드를 보면 fork함수의 반환값을 pid변수에 담고, pid값이 0이면 자식 프로세스의 pid 반환값 , pid값이 0이 아니면 부모 프로세스의 pid 반환값을 출력한다. 결과를 보면 부모 pid 반환값은 20573, 자식의 pid 반환값은 0을 의미한다는 걸 알 수 있다. 그리고 실행 순서가 부모 실행 -&gt; 부모 종료 -&gt; 자식 실행 -&gt; 자식 종료 순서로 결과가 나왔지만 항상 이 순서를 보장하지 않는다. 즉 순차적으로 실행되는게 아님을 주의 해야 한다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드"
+  },"41": {
+    "doc": "Functions",
+    "title": "2. wait",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-wait",
+    "relUrl": "/docs/pipex/functions/#2-wait"
+  },"42": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;sys/wait.h&gt; #include &lt;sys/types.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-1",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-1"
+  },"43": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "pid_t wait(int *wstatus); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-1",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-1"
+  },"44": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 종료된 자식 프로세스의 프로세스 ID 반환 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-1",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-1"
+  },"45": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "함수의 이름 그대로 기다리는 함수이다. 어떤걸 기다리냐면 fork를 사용해 자식 프로세스를 생성했을 때, 부모 프로세스에서 자식 프로세스가 종료될 때 까지 기다린다. 하지만 자식 프로세스가 종료 되지 않는다면 부모 프로세스에서 무한 대기상태가 될 수 있다. 그럼 왜 자식 프로세스가 먼저 실행되고 종료되길 기다리는가?? fork 함수가 실행되면 부모와 자식 프로세스의 실행 순서를 보장할 수 없다고 했다. 부모 프로세스가 먼저 종료되면 자섹 프로세스는 고아 프로세스(PPID(1))가 된다. 이 문제를 방지하기 위해 wait을 사용한다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-1",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-1"
+  },"46": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/wait.h&gt; int main(void) { //프로세스 ID를 저장할 변수 int pid; int wstatus; if ((pid = fork()) == -1) { printf(\"프로세스 생성 실패\\n\"); exit(0); } if (pid == 0) { printf(\"자식 프로세스 시작\\n\"); for (int i = 0; i &lt; 3; i++) { printf(\"Child : %d\\n\", i); sleep(2); } printf(\"자식 프로세스 종료\\n\"); exit(3); } else { printf(\"부모 프로세스 시작\\n\"); printf(\"부모 PID: %d\\n\",getpid()); printf(\"자식 PID: %d\\n\",pid); int child_pid = wait(&amp;wstatus); printf(\"wait 인자값: %d\\n\", wstatus); printf(\"wait 반환값: %d\\n\", child_pid); printf(\"부모 프로세스 종료\\n\"); exit(0); } } . 위 결과를 보면 부모 프로세스 -&gt; 자식 프로세스 순서로 실행됐지만 부모 프로세스에서 자식 프로세서가 종료되기를 기다린다. 그리고 wait 함수는 종료된 자식 프로세스의 PID를 반환한다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-1",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드-1"
+  },"47": {
+    "doc": "Functions",
+    "title": "3. waitpid",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-waitpid",
+    "relUrl": "/docs/pipex/functions/#3-waitpid"
+  },"48": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;sys/wait.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-2",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-2"
+  },"49": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "pid_t waitpid(pid_t pid, int *status, int options); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-2",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-2"
+  },"50": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 종료된 자식 프로세스의 프로세스 ID 반환 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-2",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-2"
+  },"51": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "waitpid 함수는 wait 함수와 같이 자식 프로세스의 상태를 획득하고 자원을 수거 및 반환하는 함수이다. 인자는 3개(pid_t pid, int *status, int options)를 받으며, 반환값과 2번 째 인자는 wait함수와 동일하다. 그래서 1, 3번만 설명을 하겠다. 그 전에 waitpid 와 wait의 차이를 알아보자 wait 함수는 fork를 통해 생성한 자식이 1개가 아니라 여러 개인 경우, wait 함수를 사용한 부모 프로세스는 종료된 임의의 자식 프로세스를 받는다. 즉 특정한 자식 프로세스를 지목할 수 없다. waitpid 함수는 이런 문제를 pid인자를 받음으로써 해결할 수 있게 한다. 첫 번째 인자 . | 첫 번째 인자 | 내용 | . | pid가 -1인 경우 | 임의의 자식 프로세스를 기다린다 | . | pid가 양수인 경우 | 프로세스 ID가 pid인 자식 프로세스를 기다린다 | . | pid가 -1 보다 작은 경우 | 프로세스 그룹 ID가 pid의 절대값과 같은 자식을 기다린다 | . | pid가 0인 경우 | waitpid 호출한 프로세스(부모)ㅇ의 프로세스 그룹 PID와 같은 프로세스 그룹 ID를 가진 프로세스를 기다린다 | . 세 번째 인자 . | 세 번째 인자 | 내용 | . | WNOHANG | 자식 프로세스의 종료를 기다리지 않고 상태를 반환한다 | . | WUNTRACED | 중단된 자식 프로세스의 상태를 반환한다 | . | WCONTINUED | 중단되었다가 다시 실행된 자식 프로세스의 상태를 반환한다. | . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-2",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-2"
+  },"52": {
+    "doc": "Functions",
+    "title": "4. pipe",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-pipe",
+    "relUrl": "/docs/pipex/functions/#4-pipe"
+  },"53": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-3",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-3"
+  },"54": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int pipe(int fd[2]); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-3",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-3"
+  },"55": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-3",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-3"
+  },"56": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "pipe는 프로세스간 통신을 할 때 사용되는 기법이다. pipe는 IPC의 기법중 하나로 모든 유닉스 시스템이 제공한다. IPC pipe는 원소를 2개 가지는 int형 배열을 인자로 받는다. pipe함수가 정상적으로 실행되면 커널영역에 파이프가 생성된다. 파이프는 커널영역에 생성되고, 생성한 프로세스는 생성한 파이프에 대한 파일 디스크럽터를 갖는다. 파일디스크립터 fd[0]은 읽기, fd[1]은 쓰기용 파이프입니다. 그래서 fd[1]에 데이터를 쓰게 되면 fd[0]을 통해 데이터를 읽을 수 있습니다. 파이프를 이용해 다른 프로세스(부모자식)간 통신을 하려면 어떻게 해야할까? 우선 fork를 통해 자식 프로세스를 생성한다. 여기서 중요한 것은 자식 프로세스를 생성할 때 부모 프로세스의 파일 디스크립터도 복제된다. 그래서 부모 프로세스에서 fd[1]에 값을 쓰면 자식 프로세스의 fd[0]을 통해 읽을 수 있다. 그림을 보면 parent에서 fork를 하고 파일 디스크립터 fd[1]을 이용해 파이프에 데이터를 write하면, child에서는 같은 파일디스크립터를 공유하고 있으므로 fd[0]을 이용해 데이터를 read하면 된다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-3",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-3"
+  },"57": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;unistd.h&gt; #include &lt;string.h&gt; int main(void) { int fd[2]; pid_t pid; char buf[1024]; if ((pipe(fd)) == -1) { printf(\"파이프 생성 실패\\n\"); exit(1); } if ((pid = fork()) == -1) { printf(\"프로세스 생성 실패\\n\"); exit(1); } if (pid == 0) //자식 프로세스 { close(fd[1]); read(fd[0], buf, 1024); printf(\"자식에서 읽은 값: %s\\n\", buf); } else //부모 프로세스 { close(fd[0]); strcpy(buf, \"부모 프로세스에서 write\"); write(fd[1], buf, strlen(buf)); } exit(0); } . 자식, 프로세스를 보면 각각 사용하지 않는 파일 디스크립터는 close를 했습니다. 사용하지 않는 파일디스크립터를 정리하기 위함입니다. 부모 프로세스에서 부모 프로세서에서 write문자열을 fd[1]에 write했고, 자식 프로세스에서 fd[0]을 통해 데이터를 read해서 출력했습니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-2",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드-2"
+  },"58": {
+    "doc": "Functions",
+    "title": "5. dup",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-dup",
+    "relUrl": "/docs/pipex/functions/#5-dup"
+  },"59": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-4",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-4"
+  },"60": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int dup(int fd); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-4",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-4"
+  },"61": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 파일 디스크립터를 복사하여 반환 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-4",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-4"
+  },"62": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "dup 함수는 이름 그대로 파일 디스크립터를 인자로 받고 복사하여 반환하는 함수입니다. 하지만 복제를 하는것이지 원본과 똑같은 파일디스크립터가 아닙니다. 복제할 때, 복제되는 파일 디스크립터의 값은 현재 사용하고 있지 않는 가장 작은 파일 디스크립터값을 반환 합니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-4",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-4"
+  },"63": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;unistd.h&gt; #include &lt;string.h&gt; int main(void) { int fd[2]; int dup_fd; char buf[1024]; pipe(fd); dup_fd = dup(fd[0]); write(fd[1], \"hi\", 3); read(dup_fd, buf, 1024); printf(\"dup_fd을 통해 읽어온 값: %s\\n\", buf); printf(\"fd[0]: %d\\n\", fd[0]); printf(\"dup_fd: %d\\n\", dup_fd); } . 위 코드에서 dup_fd에 fd[0]를 복제 했습니다. fd[0]의 파일 디스크립터 테이블의값이 3인 경우 fd[0]과 dup_fd를 출력했을 때, 같은 값을 가지고 있지만 출력되는 파일 디스크립터의 값이 다릅니다. 그 이유는 복제된 dup_fd는 파일 디스크립터 테이블 새롭게 추가되고 fd[0]가 가르키는 파일 테이블을 같이 가르킵니다. 즉 함수 이름 dup에 맞게 새롭게 복제되어 같은 값을 가르키는 파일 디스크립터를 반환합니다. 그래서 dup함수를 사용했으면 복제된 파일 디스크립터변수도 close해줘야 합니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-3",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드-3"
+  },"64": {
+    "doc": "Functions",
+    "title": "6. dup2",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#6-dup2",
+    "relUrl": "/docs/pipex/functions/#6-dup2"
+  },"65": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-5",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-5"
+  },"66": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "pid_t dup2(int fd, int fd2); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-5",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-5"
+  },"67": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 두 번째 매개변수 파일 디스크립터 반환 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-5",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-5"
+  },"68": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "dup함수는 매개 변수에 2개의 파일 디스크립터를 입력 받습니다. 그리고 첫 번째 인자를 두 번째 인자에 복제합니다. 그리고 복제된 파일 디스크립터를 반환 합니다. 만약 두 번째 인자가 open상태라면 close를 진행하고 복제를 진행합니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-5",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-5"
+  },"69": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;unistd.h&gt; int main(void) { int fd[2]; int fd2[2]; int temp_fd; char buf[1024], buf1[1024], buf2[1024]; pipe(fd); pipe(fd2); temp_fd = dup2(fd[1], fd2[1]); write(fd[1], \"hello\", 6); read(fd[0], buf, 1024); printf(\"fd[1]에 쓴 데이터 : %s\\n\", buf); write(fd2[1], \"kimho\", 6); read(fd[0], buf1, 1024); printf(\"fd2[1]에 쓴 데이터 : %s\\n\", buf1); write(temp_fd, \"12345\", 6); read(fd[0], buf2, 1024); printf(\"temp_fd에 쓴 데이터 : %s\\n\", buf2); } . temp_fd = dup2(fd[1], fd2[1]) 코드를 실행함으로써 fd[1]을 fd2[1]에 복제하고 반환합니다. 그리고 각각 fd[1], fd2[1], temp_fd에 문자열을 write하고 fd[0]을 통해 read하면 저장한 문자열이 모두 출력된 것을 볼 수 있습니다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-4",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드-4"
+  },"70": {
+    "doc": "Functions",
+    "title": "7. access",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#7-access",
+    "relUrl": "/docs/pipex/functions/#7-access"
+  },"71": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-6",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-6"
+  },"72": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int access(const char *path, int mode); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-6",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-6"
+  },"73": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 0 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-6",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-6"
+  },"74": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "파일 명대로 파일을 확인하는 함수입니다. 첫 번째 인자에 해당하는 file을 두 번째 인자값인 mode값으로 확인을 합니다. mode값으로 파일을 검사할 때, mode 에 해당하는 내용이 가능하면 1, 실패하면 -1을 반환합니다. Mode 값 . | mode | 내용 | . | F_OK | 파일 존재 확인 | . | R_OK | 읽기 확인 | . | W_OK | 쓰기 확인 | . | X_OK | 실행 확인 | . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-6",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-6"
+  },"75": {
+    "doc": "Functions",
+    "title": "8. execve",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/#8-execve",
+    "relUrl": "/docs/pipex/functions/#8-execve"
+  },"76": {
+    "doc": "Functions",
+    "title": "1. 헤더파일",
+    "content": "#include &lt;unistd.h&gt; . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#1-%ED%97%A4%EB%8D%94%ED%8C%8C%EC%9D%BC-7",
+    "relUrl": "/docs/pipex/functions/#1-헤더파일-7"
+  },"77": {
+    "doc": "Functions",
+    "title": "2. 함수 원형",
+    "content": "int execve(const char *pathname, char *const argv[], char *const envp[]); . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#2-%ED%95%A8%EC%88%98-%EC%9B%90%ED%98%95-7",
+    "relUrl": "/docs/pipex/functions/#2-함수-원형-7"
+  },"78": {
+    "doc": "Functions",
+    "title": "3. 반환 값",
+    "content": "성공 시 별도의 프로세스가 생성되고 정상적으로 실행되면 0 반환 실패 시 -1 . ",
+    "url": "http://localhost:4000/docs/pipex/functions/#3-%EB%B0%98%ED%99%98-%EA%B0%92-7",
+    "relUrl": "/docs/pipex/functions/#3-반환-값-7"
+  },"79": {
+    "doc": "Functions",
+    "title": "4. 함수 설명",
+    "content": "execve 함수는 exec 계열의 함수입니다. exec 계열 함수는 보통 매개변수로 입력된 파일을 실행하는 함수입니다. execve 함수는 3개의 인자를 받습니다. 첫 번째 인자로 받은 pathname의 파일을 실행하고, argv, envp 두, 세 번째 매개변수 값을 전달합니다. 첫 번째 인자에 대해 실행 권한 확인이 필요하며 이는 access함수를 통해 검사가 가능합니다. argv는 첫 번째 인자로 실행되는 파일에 대한 옵션입니다. 예를 들어 첫 번째 파일이 ls명령을 실행하면 argv안에 argv[]={\"ls\", \"-l\"} 와 같이 옵션값이 들어가며 가장 첫 번째인덱스에는 명령어의 이름이 들어가야 합니다. evnp는 환경 설정 파일이다. argv, envp모두 char *[] 배열 형태이기에 마지막 인덱스에 NULL값을 넣어줘야 한다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#4-%ED%95%A8%EC%88%98-%EC%84%A4%EB%AA%85-7",
+    "relUrl": "/docs/pipex/functions/#4-함수-설명-7"
+  },"80": {
+    "doc": "Functions",
+    "title": "5. 예시 코드",
+    "content": "#include &lt;stdio.h&gt; #include &lt;unistd.h&gt; int main(int argc, char **argv, char **envp) { execve(\"/bin/ls\", argv, NULL); } . 코드를 보면 첫 번째 인자로 /bin/ls 파일을 지정했고 실핼할 때 -l옵션을 주었다. 그래서 ls -l명령어가 실행된다. ",
+    "url": "http://localhost:4000/docs/pipex/functions/#5-%EC%98%88%EC%8B%9C-%EC%BD%94%EB%93%9C-5",
+    "relUrl": "/docs/pipex/functions/#5-예시-코드-5"
+  },"81": {
+    "doc": "Functions",
+    "title": "Functions",
+    "content": " ",
+    "url": "http://localhost:4000/docs/pipex/functions/",
+    "relUrl": "/docs/pipex/functions/"
+  },"82": {
+    "doc": "Go-network",
+    "title": "들어가며",
+    "content": "golang로 된 자료들이 많이 없어서 사소한거라도 기록합니다. 대부분 아시는 내용이겠지만 혹시 모르시는 분이 계시면 도움이 되었으면 좋겠습니다 . ",
+    "url": "http://localhost:4000/docs/go-network#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0",
+    "relUrl": "/docs/go-network#들어가며"
+  },"83": {
+    "doc": "Go-network",
+    "title": "Go-network",
+    "content": " ",
+    "url": "http://localhost:4000/docs/go-network",
+    "relUrl": "/docs/go-network"
+  },"84": {
     "doc": "Home",
     "title": "Home",
     "content": " ",
     "url": "http://localhost:4000/",
     "relUrl": "/"
-  },"2": {
-    "doc": "pipex",
-    "title": "pipex",
+  },"85": {
+    "doc": "Network",
+    "title": "들어가며",
+    "content": "네트워크에 대한 예제는 golang을 이용했습니다 . ",
+    "url": "http://localhost:4000/docs/network#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0",
+    "relUrl": "/docs/network#들어가며"
+  },"86": {
+    "doc": "Network",
+    "title": "Network",
+    "content": " ",
+    "url": "http://localhost:4000/docs/network",
+    "relUrl": "/docs/network"
+  },"87": {
+    "doc": "OS",
+    "title": "들어가며",
+    "content": "쉽게 배우는 운영체제 책을 공부하며 정리한 글입니다. 틀린 내용이 있을 수 있습니다. 사용한 이미지는 쉽게 배우는 운영체제에서 사용했습니다 예제 코드는 c, go언어로 작성되었습니다 . ",
+    "url": "http://localhost:4000/docs/os#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0",
+    "relUrl": "/docs/os#들어가며"
+  },"88": {
+    "doc": "OS",
+    "title": "OS",
+    "content": " ",
+    "url": "http://localhost:4000/docs/os",
+    "relUrl": "/docs/os"
+  },"89": {
+    "doc": "Philosophers",
+    "title": "Philosophers",
+    "content": " ",
+    "url": "http://localhost:4000/docs/philosophers",
+    "relUrl": "/docs/philosophers"
+  },"90": {
+    "doc": "Pipex",
+    "title": "Pipex",
     "content": " ",
     "url": "http://localhost:4000/docs/pipex",
     "relUrl": "/docs/pipex"
-  },"3": {
-    "doc": 123,
-    "title": "UI Components",
-    "content": "To make it as easy as possible to write documentation in plain Markdown, most UI components are styled using default Markdown elements with few additional CSS classes needed. ",
-    "url": "http://localhost:4000/docs/test#ui-components",
-    "relUrl": "/docs/test#ui-components"
-  },"4": {
-    "doc": 123,
-    "title": 123,
+  },"91": {
+    "doc": "process",
+    "title": "Process란 무엇인가?",
+    "content": "프로세스의 정의를 찾아보면 실행중인 프로그램이라고 정의됩니다. 저는 정의된 내용을 보고 “아 프로세스는 이런거구나!” 라고 이해가 되지 않습니다. 위 말을 제 방식으로 표현하면 프로세스는 프로그램을 실행하는 단위로 표현할 수 있습니다 . 게임을 예로들어 쿠키런이라는 게임을 실행한다고 했을 때, 실행파일 즉 쿠키런 게임에 대한 코드는 저희 하드 디스크에 저장이 되어있고 이를 실행하면 메모리(RAM)에 프로세스의 형태로 올라가게 됩니다. 그리고 메모리에 쿠키런 프로세스가 올라가면 저희는 쿠키런이 실행됐다 라고 말합니다 . 많은 사람들이 프로그램이 멈출 때 작업 관리자에서 특정 프로세스를 종료시킨적이 있을 겁니다. 그리고 그 안에 무수히 많은 프로세스들이 있는걸 봤습니다. 이 많은 프로세스들을 어떻게 다 실행할 수 있는걸까요? 운영 체제는 시분할방식을 이용하여 각각의 프로세스에 일정시간을 할당하여 처리합니다. 여러 개의 프로그램(프로세스)가 동시에 처리된 것 처럼 보이지만 CPU가 프로세스마다 시간을 할당하고 할당한 시간만큼 연산을하여 동시에 실행된 것 처럼 보이는겁니다. 여러개의 프로세스를 CPU가 돌아가며 처리한다고 말씀을 드렸는데 A프로세스를 실행하고 시간이 다 끝나면 B, C, D...등 다른 프로세스를 실행합니다 이렇게 다른 프로세스로 교체하는걸 문맥교환(Context Switching)이라고 합니다. 즉 현재 작업중인 프로세스에 대한 작업을 완료 or 중단하고 다른 프로세스를 연산하는걸 의미합니다. 그리고 문맥교환을 하기위해선 프로세스에 대한 정보가 필요한데 이 정보를 PCB(Process Control Block)라고 합니다. 프로세스가 생성이되면 PCB또한 같이 생성되고 운영체제는 PCB값으로 프로세스의 정보를 확인합니다. 이 두 개념은 아래에서 자세히 기술하겠습니다. ",
+    "url": "http://localhost:4000/docs/OS/process/#process%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80",
+    "relUrl": "/docs/OS/process/#process란-무엇인가"
+  },"92": {
+    "doc": "process",
+    "title": "PCB(Process Control Blocks)",
+    "content": "PCB는 프로세스를 실행하는데 중요한 정보를 담고 있고 프로세스가 생성될 때 같이 생성됩니다 또한 프로세스가 종료되면 같이 사라집니다. ",
+    "url": "http://localhost:4000/docs/OS/process/#pcbprocess-control-blocks",
+    "relUrl": "/docs/OS/process/#pcbprocess-control-blocks"
+  },"93": {
+    "doc": "process",
+    "title": "PCB 구성",
+    "content": "(쉽게 배우는 운영체제 pcb image) . 1. 포인터 . 하나의 프로세스가 실행중이고 다른 프로세스는 실행하기를 기다리고 있습니다. 이를 대기 상태라고 부르고 이들은 대기 큐(Queue)에서 실행을 대기합니다. (쉽게 배우는 운영체제 pcb image) 그림과 같이 포인터 주소를 이용하여 큐를 구성합니다. 이름 그대로 PCB의 주소를 의미합니다. 대기 큐의 PCB순서는 스케쥴링이라는 여러 알고리즘에 의하여 순서가 결정됩니다. 2. 프로세스 상태(status) . 프로세스는 생성, 준비, 실행, 대기, 보류등 여러 상태가 있습니다. 현재 어떤 상태인지를 의미하는 값입니다. 3. 프로세스 구분자(ID) . 프로세스는 각자 고유의 ID(정수)값을 가지고 있습니다. 운영체제도 프로세스를 구분해야하므로 고유한 ID를 블록에 가지고 있습니다 . 4. 프로그램 카운터(PC) . 프로세스들이 CPU를 에게 할당받아 사용하는 시간을 타임 슬라이스라고 합니다. A에서 CPU를 선점하여 50%만큼 작업을 하다가 B가 CPU를 선점했습니다. 일정 시간이 흐르고 난 후 A가 다시 실행됐을 때 어떻게 50%지점부터 시작할 수 있을까요? 프로그램 카운터(PC)에 다음 실행할 명령어의 위치를 가리켜 다시 실행되었을 때 이어서 작업할 수 있습니다. 즉 간단히 말해서 다음에 실행할 명령어를 가지고 있습니다. 5. 프로세스 우선순위 . 1.포인터 그림에서 대기 큐는 한개 였는데 실제로는 여러 개의 큐를 가지고 있습니다. 대기 상태의 큐는 우선순위에 따라 여러개가 있으며 우선순위가 낮은 프로세스가 먼저 실행됩니다. 우선순위가 낮은 프로세스는 주로 커널 프로세스가 해당됩니다. 6. PPID, CPID . 부모 프로세스, 자식 프로세스에 대한 정보를 가지고 있습니다. 프로세스는 자기 자신을 복제(fork)할 수 있으며 복제된 프로세스를 자식, 복제를 실행한 프로세스를 부모 프로세스라고 합니다. ",
+    "url": "http://localhost:4000/docs/OS/process/#pcb-%EA%B5%AC%EC%84%B1",
+    "relUrl": "/docs/OS/process/#pcb-구성"
+  },"94": {
+    "doc": "process",
+    "title": "프로세스 상태(Context Switching)",
+    "content": "(쉽게 배우는 운영체제 image) 그림을 보면 5가지의 상태가 있습니다. 이 상태는 프로세스가 가지는 상태이고 pcb의 블록값으로도 가지고 있습니다. 각각 어떤 상태인지 알아봅시다. 1. 생성 상태 . 프로그램이 메모리에 올라오고 운영체제에 의해 pcb가 할당받은 상태를 의미합니다. 즉 프로그램이 방금 막 실행한 상태입니다. 프로세스는 생성되면 바로 실행되는게 아니라 준비 상태에서 실행되기를 기다립니다. 2. 준비 상태 . 실행 대기준인 프로세스가 기다리는 상태를 의미합니다. pcb가 준비 큐(ready queue)에서 대기하며 스케쥴러에 의해 관리됩니다. 프로세스가 준비 상태에서 실행 상태가 되는걸 dispatch라고 합니다. 내부적으로 이 명령은 dispatch(process id)명령을 통해 실행됩니다. 3. 실행 상태 . 프로세스가 CPU를 할당받아 실행되는 상태입니다. 실행 상태인 프로세스의 수는 CPU의 코어 수입니다. CPU에서 실질적으로 연산을 하는 건 코어이기 때문에 코어 수 만큼 프로세스가 실행 상태가 됩니다 프로세스가 주어진 타임 슬라이스내에 정해진 작업을 완료하지 못하면 timeout이 실행되어 준비 상태로 돌아가고 다시 실행되기를 기다립니다. 만약 실행 상태에 있는 프로세스가 입출력을 요청하면 cpu는 입출력 관리자에게 명령하고 해당 프로세스는 대기 상태가 됩니다. 이 명령을 block라고 합니다. 해당 프로세스는 입출력이 완료될 때 까지 작업을 진행할 수 없으므로 대기 상태가 되고 입출력이 완료되면 준비 상태가 됩니다. block이 수행되면 실행 프로세스 자리가 하나 비었으므로 준비 상태에 있는 프로세스중 새로운 프로세스를 dispatch시킵니다. 4. 대기 상태 . 대기 상태는 실행 상태의 프로세스가 입출력을 요청하면 입출력이 끝날 때 까지 기다리는 상태입니다. 입출력이 완료되면 인터럽트가 발생하여 준비 상태가 되는데 이를 wakeup이라고 합니다. 5. 완료 상태 . 프로세스가 자신의 일을 끝마친 상태로 코드와 데이터를 메모리에서 해제하고 PCB또한 해제합니다. 정상적인 종료는 exit()명령으로 처리하지만 비정상적인 종료면 종료 직전의 메모리를 옮기는데 이를 코어 덤프라고 합니다. ",
+    "url": "http://localhost:4000/docs/OS/process/#%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%83%81%ED%83%9Ccontext-switching",
+    "relUrl": "/docs/OS/process/#프로세스-상태context-switching"
+  },"95": {
+    "doc": "process",
+    "title": "문맥 교환(context switching)",
+    "content": "문맥 교환의 정의는 CPU를 사용중이던 프로세스는 나가고 새로운 프로세스를 받아 들이는 작업을 의미한다. 문맥 교환 절차 . (쉽게 배우는 운영체제 image) 프로세스 P1과 P2의 문맥 교환 과정이다. p1의 타임 슬라이스를 다 사용하고 timeout이 발생하고 p2는 dispatch가 발생하여 cpu를 선점한다. 또 다시 타임 슬라이스가 다하고 나면 p2에서 timeout가 발생하고 p1에서는 dispatch가 발생하여 CPU를 선점한다. 그림에서는 두 프로세스로만 나와 있지만 실제 운영체제에서는 많은 프로세스가 위 과정으로 CPU를 선점한다. ",
+    "url": "http://localhost:4000/docs/OS/process/#%EB%AC%B8%EB%A7%A5-%EA%B5%90%ED%99%98context-switching",
+    "relUrl": "/docs/OS/process/#문맥-교환context-switching"
+  },"96": {
+    "doc": "process",
+    "title": "process",
     "content": " ",
-    "url": "http://localhost:4000/docs/test",
-    "relUrl": "/docs/test"
-  },"5": {
-    "doc": "Nestjs",
-    "title": "Nestjs",
+    "url": "http://localhost:4000/docs/OS/process/",
+    "relUrl": "/docs/OS/process/"
+  },"97": {
+    "doc": "Tcp",
+    "title": "들어가며",
+    "content": "작성한 함수들은 모두 테스트용으로 만들었습니다. 그래서 함수에서 error를 반환하지 않고 출력만 했습니다. ",
+    "url": "http://localhost:4000/docs/go_network/tcp/#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0",
+    "relUrl": "/docs/go_network/tcp/#들어가며"
+  },"98": {
+    "doc": "Tcp",
+    "title": "TCP 수신 연결 응답 및 요청",
+    "content": "golang 표준 라이브러리의 net패키지를 이용해 TCP 연결을 수립해보겠습니다. net패키지의 net.Listen함수를 사용하면 수신 연결 요청 처리가 가능한 TCP서버를 만들 수 있습니다. 이런 서버를 리스너(Listener)라고 합니다. func Listener() { //리스너에 IP와 포트 번호가 바인딩됨 listener, err := net.Listen(\"tcp\", \"127.0.0.1:3000\") if err != nil { fmt.Println(\"listener(): Error net.Listen func\") return } defer func() { _ = listener.Close() }() fmt.Printf(\"bound to %s\", listener.Addr()) } . net.Listen 함수는 네트워크의 종류(tcp)와 ip:port를 매개변수로 받습니다. net.Listen 함수는 net.Listener 인터페이스와 error 인터페이스를 반환합니다. 함수가 성공하면 인자로 입력한 ip:port주소로 바인딩됩니다. 이 뜻은 운영체제에 해당 주소를 가진 리스너를 할당하였다는 의미입니다. defer키워드로 함수자 종료되면 자동으로 실행되는 익명 함수를 만들어 생성된 리스너가 우아(listener.Close())하게 종료되게 합니다. 그럼 net.Listener 인터페이스는 어떻게 정의 되어 있을까요? 실제 golang 코드를 보겠습니다. Listener 인터페이스 . //net.go type Listener interface { Accept() (Conn, error) Close() error Addr() Addr } . net.go에 정의된 리스터 인터페이스입니다. 3개의 메소드를 가지고 있습니다. | Accept() - 클라이언트 연결되면 연결된 Conn(커넥션)을 반환합니다. | Close() - TCP 연결을 종료합니다 | Addr() - 연결된 네트워크 타입과 주소가 저장된 Addr 인터페이스를 반환합니다. | . net.Listen . //dial.go func Listen(network, address string) (Listener, error) { var lc ListenConfig return lc.Listen(context.Background(), network, address) } . ListenConfig 구조체를 선언하며 ListenConfig의 Listen메소드를 실행하여 입력한 network, address에 맞게 설정해줍니다. Listen 메소드는 . func (lc *ListenConfig) Listen(ctx context.Context, network, address string) (Listener, error) { addrs, err := DefaultResolver.resolveAddrList(ctx, \"listen\", network, address, nil) if err != nil { return nil, &amp;OpError{Op: \"listen\", Net: network, Source: nil, Addr: nil, Err: err} } sl := &amp;sysListener{ ListenConfig: *lc, network: network, address: address, } var l Listener la := addrs.first(isIPv4) switch la := la.(type) { case *TCPAddr: l, err = sl.listenTCP(ctx, la) case *UnixAddr: l, err = sl.listenUnix(ctx, la) default: return nil, &amp;OpError{Op: \"listen\", Net: sl.network, Source: nil, Addr: la, Err: &amp;AddrError{Err: \"unexpected address type\", Addr: address}} } if err != nil { return nil, &amp;OpError{Op: \"listen\", Net: sl.network, Source: nil, Addr: la, Err: err} // l is non-nil interface containing nil pointer } return l, nil } . dial.go안에 정의되어 있으며, 내부적으로 Listener 인터페이스를 만들어 저희가 입력한 설정에 맞게 설정한 후 반환해줍니다. 리스너가 요청을 수락하는 과정을 알아봅시다. for { //수신 연결, 실패 시 err 반환 conn, err := listener.Accept() if err != nil { fmt.Println(err) return } go func(c net.Conn) { defer c.Close() fmt.Println(\"goroutine : \", c.LocalAddr()) }(conn) } . for 루프를 돌며 서버에서 수신 요청을 대기합니다. 수신 요청이 오면 listener.Accept함수가 요청을 수락하고 고루틴에 해당 연결에 대한 일을 처리합니다. 위 코드는 연결이 있으면 주소만 출력하고 종료합니다. ",
+    "url": "http://localhost:4000/docs/go_network/tcp/#tcp-%EC%88%98%EC%8B%A0-%EC%97%B0%EA%B2%B0-%EC%9D%91%EB%8B%B5-%EB%B0%8F-%EC%9A%94%EC%B2%AD",
+    "relUrl": "/docs/go_network/tcp/#tcp-수신-연결-응답-및-요청"
+  },"99": {
+    "doc": "Tcp",
+    "title": "Tcp",
     "content": " ",
-    "url": "http://localhost:4000/docs/Nestjs",
-    "relUrl": "/docs/Nestjs"
+    "url": "http://localhost:4000/docs/go_network/tcp/",
+    "relUrl": "/docs/go_network/tcp/"
+  },"100": {
+    "doc": "Tcp",
+    "title": "들어가며",
+    "content": "개인적인 생각이 많이 들어가 있습니다. 제가 적은 내용이 무조건 맞다고 말할 수 없습니다. ",
+    "url": "http://localhost:4000/docs/network/tcp/#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0",
+    "relUrl": "/docs/network/tcp/#들어가며"
+  },"101": {
+    "doc": "Tcp",
+    "title": "TCP가 신뢰성인 이유",
+    "content": "흔히 TCP는 신뢰성이 있다 라고 표현하고 UDP는 신뢰성이 없다라고 얘기합니다. 그럼 왜 TCP가 신뢰성이 있다는 걸까요?? . TCP에 대해 검색을 하면 많은 분들이 TCP는 통신을 하려면 3 way handshake 방식을 사용하여 연결하기 때문에 신뢰성이 있다고 표현합니다. 제 개인적인 생각으로는 3 way handshake는 연결하는 방법이지 신뢰성을 보장한다고 생각하지 않습니다. 3번의 요청/응답을 통해 연결이 성공/실패 해도 연결 상태만 바뀔뿐 전송된 데이터의 안전을 보장해주지 않습니다. 제가 생각하는 TCP가 신뢰성 이유는 2가지라고 생각합니다(주관적, 배움에 따라 더 많아질 수 있습니다) . | 패킷 손실 문제와 패킷 수신 순서에 대한 문제를 해결합니다.(흐름제어) | 체크섬을 이용하여 수신된 데이터에 문제가 있으면 재수신을 요청합니다. | . 패킷손실 및 패킷 수신 순서 . 네트워크 정체는 네트워크에서 한 연결에 대해 처리할 수 있는 데이터의 양이 초과한 경우 발생합니다. 예를 들면 100Mbps 대역폭의 연결에서 1Gbps의 데이터를 전송할 수 없습니다. 100Mbps는 빠르게 포화되고 초과되는 데이터는 삭제될 것입니다. 그래서 TCP는 데이터의 전송 속도를 조정하여, 흐름 제어(Stop And Wait, Sliidng Window)이라는 방식을 사용해 손실된 패킷을 최소로 유지하며 데이터를 전송합니다. TCP는 연결이 힘든 네트워크에서 취약합니다. 예를 들면 Wi-FI 사용하는데 연결이 됐다 끊겼다 하는 경우가 많습니다. TCP는 3 way handshake방식으로 3번의 요청/응답을 하는데 연결이 자구 끊기는 이러한 상황에서 TCP는 취약하다고 말할 수 있습니다. 만약 데이터를 전송하던 중 다시 라우팅되어 네트워크 경로가 바뀌면 어떻게 될까요? 이러면 수신 받는 쪽에서는 받는 패킷의 순서가 깨지게 될겁니다. 하지만 TCP는 다행이 순서 없는 패킷을 정리해 순차적으로 처리 합니다. 체크섬 . TCP는 수신된 데이터에 오류가 있는지 검사하기 위해 체크섬을 사용합니다. 송신자는 체크섬 알고리즘을 사용해 계산한 체크섬을 TCP헤더에 포함하여 송신하고 수신자는 헤더에 있는 체크섬 알고리즘을 이용해 수신된 데이터를 확인하여 오류 여부를 파악합니다. ",
+    "url": "http://localhost:4000/docs/network/tcp/#tcp%EA%B0%80-%EC%8B%A0%EB%A2%B0%EC%84%B1%EC%9D%B8-%EC%9D%B4%EC%9C%A0",
+    "relUrl": "/docs/network/tcp/#tcp가-신뢰성인-이유"
+  },"102": {
+    "doc": "Tcp",
+    "title": "3 way handshake",
+    "content": "TCP 연결은 클라이언트-서버간 3 way handshake(이하 핸드셰이크) 과정을 통해 진행됩니다. 정상적으로 연결이 이루어지면 TCP세션을 생성하여 서로 데이터를 주고 받습니다. TCP에서 서버 클라이언트라는 관계는 없고 서로 다른 노드로 인식하지만 이해하기 쉽게 서버-클라이언트라고 표현하겠습니다 . TCP 연결이 성립될려면 서버는 항상 클라이언트의 요청을 대기해야 합니다. 그리고 3번의 요청/응답을 진행하여 세션을 수립합니다. 1. 클라이언트 -&gt; 서버 SYN . 클라이어튼는 서버에게 SYN(Synchronize) 플래그가 설정된 패킷을 서버로 전송합니다. 이 SYN 패킷은 앞으로 어떻게 통신할지(Sliding Window)에 대한 설정값을 가지고 있습니다. 2. 서버 -&gt; 클라이언트 SYN/ACK . 서버는 클라이언트에게 ACK(Acknowledgment)플래그와 SYN플래그가 설정된 패킷을 클라이언트에게 전송합니다. ACK는 1번의 SYN 플래그를 정상적으로 수신했다는 의미고 SYN 플래그는 1번의 SYN 플래그의 설정값중 앞으로 어떤 설정값을 사용할지에 대한 내용을 담고 있습니다. 3. 클라이언트 -&gt; 서버 SYN . 마지막 단계로 클라이언트는 서버의 SYN 내용을 승인한다는 의미의 ACK를 보내고 핸드셰이크가 완료됩니다. 핸드셰이크가 완료되면 TCP세션이 수립되며 이후 클라이언트와 서버는 데이터를 주고받을 수 있습니다. 만약 어느 한쪽에서도 데이터를 전송하지 않으면 유휴 상태로 남아 있고 이는 시스템에서 메모리를 계속 사용하므로 이에 따른 관리가 필요합니다. ",
+    "url": "http://localhost:4000/docs/network/tcp/#3-way-handshake",
+    "relUrl": "/docs/network/tcp/#3-way-handshake"
+  },"103": {
+    "doc": "Tcp",
+    "title": "수신 버퍼와 슬라이딩 윈도우(Slidding Window)",
+    "content": "클라이언트는 서버에게 ACK를 보낼 때 수신 버퍼(Receive Buffer)에 어느 만큼의 공간을 사용할 수 있는지 서버에 알려줘야 합니다. 수신 버퍼는 통신 중 수신 데이터를 사용하기 위한 메모리 공간입니다. 수신 버퍼를 사용하면 프로그램에서 수신된 데이터를 매번 읽을 필요 없이 어느정도 데이터를 받을 수 있습니다. 이 수신 버퍼의 크기는 ACK 패킷에 윈도우 크기(Window Size) 정보를 포함하여 보냅니다. 윈도우 크기는 송신자가 수신자에게 수신 확인 필요 없이 전송할 수 있는 바이트입니다. 예를 들어 클라이언트가 ACK 패킷에 21024 값으로 윈도우 크기로 포함되어 있으면 서버는 클라이언트에게 다른 값의 윈도우 값을 가진 ACK패킷이 오기 전까지 21024Byte를 클라이언트로 보낼 수 있다는걸 의미합니다. 만약 윈도우 크기가 0인 ACK 패킷이 오면 수신자의 버퍼가 가득 찼다는 의미입니다. ACK 패킷에 윈도우 크기를 받고 통신을 하고 다시 ACK 패킷에 담긴 윈도우 크기로 갱신하며 통신하는 방식을 슬라이딩 윈도우라고 합니다. 이 통신을 보면 클라이언트가 서버에게 ACK 패킷에 윈도우 크기 3072바이트가 포함된 정보를 보냅니다. 서버는 클라이언트가 다시 ACK 패킷을 보내 윈도우 크기를 갱신할 때 까지 최대 3072바이트로 데이터를 전송할 수 있는걸로 확인합니다. 그래서 서버는 클라이언트로 1024바이트를 세 번 보내서 클라이언트의 수신 버퍼를 채웁니다. 다시 클리어언트는 윈도우 크기를 2048로 갱신한 ACK 패킷을 서버에 보냅니다 이 의미는 클라이언트의 수신버퍼에서 2048Byte를 읽었다는것을 의미합니다. 다시 서버는 1024를 두 번보내고 ACK 패킷을 기다립니다. 이렇게 통신하는 방식을 슬라이딩 윈도우라고 하며 계속 윈도우 크기를 갱신해가며 통신을 진행합니다. ",
+    "url": "http://localhost:4000/docs/network/tcp/#%EC%88%98%EC%8B%A0-%EB%B2%84%ED%8D%BC%EC%99%80-%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%94%A9-%EC%9C%88%EB%8F%84%EC%9A%B0slidding-window",
+    "relUrl": "/docs/network/tcp/#수신-버퍼와-슬라이딩-윈도우slidding-window"
+  },"104": {
+    "doc": "Tcp",
+    "title": "Tcp",
+    "content": " ",
+    "url": "http://localhost:4000/docs/network/tcp/",
+    "relUrl": "/docs/network/tcp/"
   }
 }

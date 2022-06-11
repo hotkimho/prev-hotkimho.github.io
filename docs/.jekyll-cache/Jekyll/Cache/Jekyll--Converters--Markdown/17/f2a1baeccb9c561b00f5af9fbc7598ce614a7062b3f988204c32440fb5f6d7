@@ -1,0 +1,74 @@
+I"!'<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nestjs에 대한 한글 자료가 많이 없어 공식문서(영어), 인강등을 참고해서 다시볼 때 알아보기 쉽게 정리한 글입니다. 잘못된 내용이 있을 수 있습니다.
+</code></pre></div></div>
+
+<h1 id="logger">Logger</h1>
+
+<p>로그는 서비스가 동작하는 과정을 남기고 추적하는 문구입니다.<br />
+이슈가 발생할 경우, 잘못된 동작만으로 문제를 찾고 해결하는게 어렵기 때문에 로그를 남겨 추적할 경우 원이 파악에 도움이되고 개발하는데 들이는 시간을 줄일 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">nestjs</code>의 기본 내장 <code class="language-plaintext highlighter-rouge">Logger</code> 클래스는 <code class="language-plaintext highlighter-rouge">@nest/common</code> 패키지로 제공이 됩니다.<br />
+로깅 옵션을 통해 다음과 같은 동작을 할 수 있습니다.</p>
+<ol>
+  <li>로깅 비활성화</li>
+  <li>로그 레벨 지정 - (log, error, warn, debug, verbose)</li>
+  <li>로거의 타임스탬프 재정의. ex) 날짜를 ISO8601 형식으로 변경</li>
+  <li>기본 로거를 재정의(오버라이딩)</li>
+  <li>기본 로거를 확장해서 커스텀 로거를 작성</li>
+  <li>의존성 주입을 통해 손쉽게 로거를 주입하거나 테스트 모듈로 제공</li>
+</ol>
+
+<h1 id="내장-로거">내장 로거</h1>
+<p><code class="language-plaintext highlighter-rouge">@nest/common</code> 패키지 안에 <code class="language-plaintext highlighter-rouge">Logger</code>클래스가 정의되어 있습니다.<br />
+이를 사용할려면 Logger 인스턴스를 생성하여 사용합니다.</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">Injectable</span><span class="p">,</span> <span class="nx">Logger</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@nestjs/common</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="p">@</span><span class="nd">Injectable</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">AppService</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="k">readonly</span> <span class="nx">logger</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Logger</span><span class="p">(</span><span class="dl">'</span><span class="s1">hoService</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="nx">getHello</span><span class="p">():</span> <span class="kr">string</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">level: error 빨간색</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="dl">'</span><span class="s1">level: warn 주황색</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">level: log 초록색</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">verbose</span><span class="p">(</span><span class="dl">'</span><span class="s1">level: verbose 퍼렁색</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="dl">'</span><span class="s1">level: debug 보라색</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">return</span> <span class="dl">'</span><span class="s1">Hello World!</span><span class="dl">'</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">private readonly logger = new Logger('hoService')</code><br />
+생성자의 입력값으로 로그에 <code class="language-plaintext highlighter-rouge">context</code>값을 주어 어디서 로그가 출력되는지 알 수 있습니다. <code class="language-plaintext highlighter-rouge">getHello()</code> 함수가 실행되면 로그는 아래와 같이 나옵니다.<br />
+<img src="/docs/nestjs/images/logger_1.png" alt="image1" /></p>
+
+<h2 id="1-로그-비활성화">1. 로그 비활성화</h2>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">NestFactory</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">AppModule</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">logger</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">main.ts</code> 파일안 app을 생성하는 과정에서 옵션 값으로 <code class="language-plaintext highlighter-rouge">logger: false</code>를 주면 내장 로거가 비활성화 됩니다.</p>
+
+<h2 id="2-로그-레벨-지정">2. 로그 레벨 지정</h2>
+<p>직접 빌드, 배포를 해본적은 없지만… ㅠㅠ  실제 사용되는 서비스에선 debug 로그가 남지 않도록 해야 합니다. 이 문제는 개발, 프로덕션등 실행환경마다 <code class="language-plaintext highlighter-rouge">로그 레벨</code>을 지정하여 해결할 수 있습니다.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">NestFactory</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">AppModule</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">logger</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NODE_ENV</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span> 
+    <span class="p">?</span> <span class="p">[</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">warn</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">log</span><span class="dl">'</span><span class="p">]</span>
+    <span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">warn</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">log</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">verbose</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">debug</span><span class="dl">'</span><span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">main.ts</code>에서 app을 생성할 때 옵션값을 위 코드와 같이 설정할 수 있습니다.<br />
+<code class="language-plaintext highlighter-rouge">.env</code>파일안에 <code class="language-plaintext highlighter-rouge">실행 환경</code>을 정의해두고 사용하면 쉽게 관리할 수 있습니다.</p>
+
+<p>만약 <code class="language-plaintext highlighter-rouge">log level</code>을 1개만 설정한다면 해당 로그보다 레벨이 <code class="language-plaintext highlighter-rouge">낮은</code>로그들도 모두 출력이 됩니다.<br />
+예를 들어 <code class="language-plaintext highlighter-rouge">verbose</code>로그 레벨로 1개만 설정이 되면
+<code class="language-plaintext highlighter-rouge">'error', 'warn', 'log', 'verbose'</code> 4개의 로그가 모두 출력됩니다.<br />
+로그 레벨 값은 nestjs <code class="language-plaintext highlighter-rouge">is-log-level-enabled.util.ts</code> 파일안에 정의 되어 있습니다.</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">LOG_LEVEL_VALUES</span><span class="p">:</span> <span class="nb">Record</span><span class="o">&lt;</span><span class="nx">LogLevel</span><span class="p">,</span> <span class="kr">number</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">debug</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">verbose</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="na">log</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="na">warn</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="na">error</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+:ET
