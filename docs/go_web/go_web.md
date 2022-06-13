@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Go-Web
+title: Go-web
 has_children: true
 permalink: /docs/web
 ---
