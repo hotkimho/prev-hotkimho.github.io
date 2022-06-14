@@ -87,3 +87,27 @@ db, err := sql.Open("mysql", databaseURL)
 코드를 실행하고 테이블을 조회하면 잘 들어가 있습니다.
 
 ### SELECT
+데이터 베이스에서 조회할 때 `db.Query` 메소드를 사용합니다.  
+`db.Query`, `db.QueryRow` 두 메소드가 있는데 두 번째의 경우 쿼리에 맞는 하나의 `row`만 가져옵니다.
+
+`db.QueryRow`를 사용해 방금 넣은 데이터를 출력해보겠습니다.
+
+```go
+db, err := sql.Open("mysql", databaseURL)
+	if err != nil {
+		fmt.Println(err)
+	}
+	query := `SELECT id, username, password, created_at FROM users WHERE id = ?`
+	var a, b, c, d string
+	err = db.QueryRow(query, 1).Scan(&a, &b, &c, &d)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(a, b, c, d)
+```
+`db.QeuryRow` 메소드도 ?값을 넣어 뒤에 인자로 입력을 받게 했습니다. `db.QueryRow(query, 1)`
+이 코드는 쿼리 `WHERE` 절의 id 가 1인 값을 가져옵니다. 그리고 그 값을 각각 `a, b, c, d`의 주소를 줘서 값이 담기게 했습니다.
+
+![img.png](/docs/go_web/images/mysql_select.png)
+
+결과를 확인해보면 아까 넣은값이 제대로 출력됩니다.
