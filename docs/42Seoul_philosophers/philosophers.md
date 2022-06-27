@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Philosophers
+title: 42Seoul-Philosophers
 has_children: true
 permalink: /docs/philosophers
 ---

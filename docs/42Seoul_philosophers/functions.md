@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Functions
-parent: Philosophers
+parent: 42Seoul-Philosophers
 
 ---
 
