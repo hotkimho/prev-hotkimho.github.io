@@ -52,4 +52,4 @@ GNL은 어떤 `파일(file descriptor)`을 읽을 때 `버퍼의 크기`를 직�
 # 7. 평가
 ![img.png](/docs/42Seoul_GNL/images/gnl_eval_1.png)
 
-![img.png](/docs/42Seoul_GNL/images/gnl_eval_1.png)
+![img.png](/docs/42Seoul_GNL/images/gnl_eval_2.png)
